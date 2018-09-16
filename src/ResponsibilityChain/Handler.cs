@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using EnsureThat;
 
@@ -80,10 +81,12 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// Uses the injected service provider to locate a handler instance of type <typeparamref name="THandler"/>, which implements <see cref="IHandler{TIn,TOut}"/>, and then adds it to the last position in the chain.
+        /// <para>Uses the injected service provider to locate a handler of type <typeparamref name="THandler"/>, which implements <see cref="IHandler{TIn,TOut}"/>.</para>
+        /// <para>Then uses the provided <paramref name="strategy"/> to perform interception to the resolved handler above. If <paramref name="strategy"/> is null, then the singleton instance of type <see cref="DefaultInterceptionStrategy"/> will be used.</para>
+        /// <para>Then adds the intercepted handler to the last position in the chain.</para>
         /// </summary>
         /// <typeparam name="THandler">The handler type, which implements <see cref="IHandler{TIn,TOut}"/></typeparam>
-        protected void AddHandler<THandler>()
+        protected void AddHandler<THandler>(IInterceptionStrategy strategy = null)
             where THandler : class, IHandler<TIn, TOut>
         {
             var handler = (THandler) _serviceProvider.GetService(typeof(THandler));
@@ -95,7 +98,14 @@ namespace ResponsibilityChain
                 )
             );
 
-            _handlers.Add(handler);
+            if (strategy == null)
+            {
+                strategy = DefaultInterceptionStrategy.Instance;
+            }
+
+            var intercepted = strategy.Intercept<THandler, TIn, TOut>(handler, _serviceProvider);
+
+            _handlers.Add(intercepted);
         }
 
         /// <summary>

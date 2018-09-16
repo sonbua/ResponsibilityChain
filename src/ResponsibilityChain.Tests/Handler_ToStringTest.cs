@@ -8,7 +8,7 @@ namespace ResponsibilityChain.Tests
         private class CompositeWithNoNestedHandler : Handler<int, int>
         {
             public CompositeWithNoNestedHandler()
-                : base(ActivatorServiceProvider.Instance)
+                : base(new MockedServiceProvider())
             {
                 AddHandler<SimpleHandler1>();
                 AddHandler<SimpleHandler2>();
@@ -28,7 +28,7 @@ namespace ResponsibilityChain.Tests
         private class CompositeWithOneLevelNestedHandler : Handler<int, int>
         {
             public CompositeWithOneLevelNestedHandler()
-                : base(ActivatorServiceProvider.Instance)
+                : base(new MockedServiceProvider())
             {
                 AddHandler<CompositeWithNoNestedHandler>();
                 AddHandler<SimpleHandler1>();
@@ -38,10 +38,20 @@ namespace ResponsibilityChain.Tests
         private class CompositeWithTwoLevelNestedHandler : Handler<int, int>
         {
             public CompositeWithTwoLevelNestedHandler()
-                : base(ActivatorServiceProvider.Instance)
+                : base(new MockedServiceProvider())
             {
                 AddHandler<CompositeWithOneLevelNestedHandler>();
                 AddHandler<SimpleHandler1>();
+            }
+        }
+
+        private class MockedServiceProvider : IServiceProvider
+        {
+            public object GetService(Type serviceType)
+            {
+                return serviceType.IsAbstract || serviceType.IsInterface
+                    ? null
+                    : Activator.CreateInstance(serviceType);
             }
         }
 
