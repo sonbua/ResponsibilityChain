@@ -39,7 +39,7 @@ namespace ResponsibilityChain.Tests
                 LogMessages = new List<string>();
             }
 
-            internal static List<string> LogMessages { get; set; }
+            internal static List<string> LogMessages { get; private set; }
 
             public TOut Intercept(IHandler<TIn, TOut> handler, TIn input, Func<TIn, TOut> next)
             {
