@@ -3,7 +3,7 @@ using System;
 namespace ResponsibilityChain
 {
     /// <summary>
-    /// Provides a mean to intercept an <typeparamref name="THandler"/>'s execution.
+    /// Provides a mean to intercept a <typeparamref name="THandler"/>'s execution.
     /// </summary>
     /// <typeparam name="THandler">The type of the handler.</typeparam>
     /// <typeparam name="TIn">The type of input.</typeparam>
@@ -13,7 +13,7 @@ namespace ResponsibilityChain
     {
         /// <summary>
         /// <para>The interceptor is in control, either do something before/after the <paramref name="handler"/>'s execution, or just bypass the <paramref name="handler"/> and move on to the <paramref name="next"/>.</para>
-        /// <para>This could be use to implement cross-cutting concerns, such as auditing, logging, transaction, opt-out a feature, etc.</para>
+        /// <para>This could be use to implement cross-cutting concerns, such as auditing, logging, transaction, opting-out a feature, etc.</para>
         /// </summary>
         /// <param name="handler">The handler object, which is going to be intercepted.</param>
         /// <param name="input">The input object.</param>

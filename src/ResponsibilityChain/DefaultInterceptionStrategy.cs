@@ -24,7 +24,7 @@ namespace ResponsibilityChain
 
         /// <summary>
         /// <para>Resolves all possible interceptors of the given <paramref name="handler"/>, which implement <see cref="IInterceptor{THandler,TIn,TOut}"/>.</para>
-        /// <para>Then creates multiple wrapped handlers to wrap the given <paramref name="handler"/> in the same order, in which the interceptors were resolved.</para>
+        /// <para>Then creates multiple wrapped handlers to wrap the given <paramref name="handler"/> in the order they were resolved, i.e. the first interceptor will be the outermost wrapper, and the last interceptor will be the closest wrapper to the wrapped handler.</para>
         /// </summary>
         /// <param name="handler">The handler object to be intercepted.</param>
         /// <param name="serviceProvider">The service provider used to resolve interceptor instances.</param>

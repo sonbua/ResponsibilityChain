@@ -13,16 +13,19 @@ namespace ResponsibilityChain
     public abstract class Handler<TIn, TOut> : IHandler<TIn, TOut>
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IInterceptionStrategy _interceptionStrategy;
         private readonly List<IHandler<TIn, TOut>> _handlers;
 
         /// <summary>
         /// </summary>
         /// <param name="serviceProvider"></param>
-        protected Handler(IServiceProvider serviceProvider)
+        /// <param name="interceptionStrategy">The interception strategy. If <code>null</code> is provided, then the singleton instance <see cref="DefaultInterceptionStrategy.Instance"/> will be used.</param>
+        protected Handler(IServiceProvider serviceProvider, IInterceptionStrategy interceptionStrategy = null)
         {
             EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
 
             _serviceProvider = serviceProvider;
+            _interceptionStrategy = interceptionStrategy ?? DefaultInterceptionStrategy.Instance;
             _handlers = new List<IHandler<TIn, TOut>>();
         }
 
@@ -69,7 +72,7 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// Adds a handler instance to the last position in the chain.
+        /// Adds a handler instance to the last position in the chain. No interception will be performed against the <paramref name="handler"/> object.
         /// </summary>
         /// <param name="handler">The handler object.</param>
         protected void AddHandler(IHandler<TIn, TOut> handler)
@@ -81,11 +84,11 @@ namespace ResponsibilityChain
 
         /// <summary>
         /// <para>Uses the injected service provider to locate a handler of type <typeparamref name="THandler"/>, which implements <see cref="IHandler{TIn,TOut}"/>.</para>
-        /// <para>Then uses the provided <paramref name="strategy"/> to perform interception to the resolved handler above. If <paramref name="strategy"/> is null, then the singleton instance of type <see cref="DefaultInterceptionStrategy"/> will be used.</para>
+        /// <para>Then uses the injected interception strategy to perform interception to the resolved handler above.</para>
         /// <para>Then adds the intercepted handler to the last position in the chain.</para>
         /// </summary>
         /// <typeparam name="THandler">The handler type, which implements <see cref="IHandler{TIn,TOut}"/></typeparam>
-        protected void AddHandler<THandler>(IInterceptionStrategy strategy = null)
+        protected void AddHandler<THandler>()
             where THandler : class, IHandler<TIn, TOut>
         {
             var handler = (THandler) _serviceProvider.GetService(typeof(THandler));
@@ -97,12 +100,7 @@ namespace ResponsibilityChain
                 )
             );
 
-            if (strategy == null)
-            {
-                strategy = DefaultInterceptionStrategy.Instance;
-            }
-
-            var intercepted = strategy.Intercept<THandler, TIn, TOut>(handler, _serviceProvider);
+            var intercepted = _interceptionStrategy.Intercept<THandler, TIn, TOut>(handler, _serviceProvider);
 
             _handlers.Add(intercepted);
         }
