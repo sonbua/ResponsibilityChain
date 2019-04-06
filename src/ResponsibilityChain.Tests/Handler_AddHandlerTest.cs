@@ -13,13 +13,13 @@ namespace ResponsibilityChain.Tests
             // act
             Action action = () =>
             {
-                var handler = new CompositeHandler();
+                var _ = new CompositeHandler();
             };
-            
+
             // assert
             Assert.Throws<ArgumentNullException>(action);
         }
-        
+
         private class CompositeHandler : Handler<int, int>
         {
             public CompositeHandler()

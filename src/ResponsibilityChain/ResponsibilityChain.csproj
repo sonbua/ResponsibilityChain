@@ -5,11 +5,11 @@
     <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageVersion>0.5.3</PackageVersion>
+    <PackageVersion>0.5.4</PackageVersion>
     <Authors>Son Dinh Nguyen</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Ensure.That" Version="8.0.0" />
+    <PackageReference Include="Ensure.That" Version="8.1.1" />
   </ItemGroup>
 </Project>

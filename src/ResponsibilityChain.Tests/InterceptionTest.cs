@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Xunit;
+
+[assembly: CollectionBehavior(CollectionBehavior.CollectionPerClass, DisableTestParallelization = true)]
 
 namespace ResponsibilityChain.Tests
 {
@@ -46,6 +49,8 @@ namespace ResponsibilityChain.Tests
             public void GivenBusinessHandlerWasInvoked_InterceptorIsInvokedToo()
             {
                 // arrange
+                StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages?.Clear();
+                DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages?.Clear();
                 var handler = new CompositeHandler(_serviceProvider);
 
                 // act
@@ -54,6 +59,35 @@ namespace ResponsibilityChain.Tests
                 // assert
                 Assert.NotEmpty(StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages);
                 Assert.NotEmpty(DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages);
+            }
+        }
+
+        public class given_builtin_activator_service_provider : InterceptionTest
+        {
+            private readonly ActivatorServiceProvider _serviceProvider;
+
+            public given_builtin_activator_service_provider()
+            {
+                _serviceProvider = ActivatorServiceProvider.Instance;
+            }
+
+            [Fact]
+            public void then_ignores_all_interceptors()
+            {
+                // arrange
+                StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages?.Clear();
+                DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages?.Clear();
+                var handler = new CompositeHandler(_serviceProvider);
+
+                // act
+                handler.Handle(112, null);
+
+                // assert
+                var stopwatchLogMessages = StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages;
+                var debugLogMessages = DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages;
+
+                Assert.True(stopwatchLogMessages == null || !stopwatchLogMessages.Any());
+                Assert.True(debugLogMessages == null || !debugLogMessages.Any());
             }
         }
 

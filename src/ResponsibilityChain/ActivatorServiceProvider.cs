@@ -25,6 +25,14 @@ namespace ResponsibilityChain
         /// </summary>
         /// <param name="serviceType"></param>
         /// <returns></returns>
-        public object GetService(Type serviceType) => Activator.CreateInstance(serviceType);
+        public object GetService(Type serviceType)
+        {
+            if (serviceType.IsAbstract)
+            {
+                return null;
+            }
+
+            return Activator.CreateInstance(serviceType);
+        }
     }
 }
