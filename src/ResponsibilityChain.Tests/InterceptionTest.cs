@@ -8,26 +8,52 @@ namespace ResponsibilityChain.Tests
 {
     public class InterceptionTest
     {
-        private class MockServiceProvider : IServiceProvider
+        public class given_mock_service_provider : InterceptionTest
         {
-            public object GetService(Type serviceType)
+            private readonly MockServiceProvider _serviceProvider;
+
+            public given_mock_service_provider()
             {
-                if (typeof(IEnumerable<IInterceptor<CoreBusinessHandler, int, string>>).IsAssignableFrom(serviceType))
+                _serviceProvider = new MockServiceProvider();
+            }
+
+            private class MockServiceProvider : IServiceProvider
+            {
+                public object GetService(Type serviceType)
                 {
-                    return new IInterceptor<CoreBusinessHandler, int, string>[]
+                    if (typeof(IEnumerable<IInterceptor<CoreBusinessHandler, int, string>>).IsAssignableFrom(
+                        serviceType
+                    ))
                     {
-                        new StopwatchInterceptor<CoreBusinessHandler, int, string>(),
-                        new DebugInterceptor<CoreBusinessHandler, int, string>(),
-                        new FeatureOptedOutInterceptor<CoreBusinessHandler, int, string>()
-                    };
-                }
+                        return new IInterceptor<CoreBusinessHandler, int, string>[]
+                        {
+                            new StopwatchInterceptor<CoreBusinessHandler, int, string>(),
+                            new DebugInterceptor<CoreBusinessHandler, int, string>(),
+                            new FeatureOptedOutInterceptor<CoreBusinessHandler, int, string>()
+                        };
+                    }
 
-                if (serviceType.IsAbstract || serviceType.IsInterface)
-                {
-                    return null;
-                }
+                    if (serviceType.IsAbstract || serviceType.IsInterface)
+                    {
+                        return null;
+                    }
 
-                return Activator.CreateInstance(serviceType);
+                    return Activator.CreateInstance(serviceType);
+                }
+            }
+
+            [Fact]
+            public void GivenBusinessHandlerWasInvoked_InterceptorIsInvokedToo()
+            {
+                // arrange
+                var handler = new CompositeHandler(_serviceProvider);
+
+                // act
+                handler.Handle(111, null);
+
+                // assert
+                Assert.NotEmpty(StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages);
+                Assert.NotEmpty(DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages);
             }
         }
 
@@ -125,21 +151,6 @@ namespace ResponsibilityChain.Tests
                 AddHandler<CoreBusinessHandler>();
                 AddHandler<FallbackHandler>();
             }
-        }
-
-        [Fact]
-        public void GivenBusinessHandlerWasInvoked_InterceptorIsInvokedToo()
-        {
-            // arrange
-            var serviceProvider = new MockServiceProvider();
-            var handler = new CompositeHandler(serviceProvider);
-
-            // act
-            handler.Handle(111, null);
-
-            // assert
-            Assert.NotEmpty(StopwatchInterceptor<CoreBusinessHandler, int, string>.LogMessages);
-            Assert.NotEmpty(DebugInterceptor<CoreBusinessHandler, int, string>.LogMessages);
         }
     }
 }
