@@ -6,14 +6,14 @@ namespace ResponsibilityChain.Tests
     public class Handler_AddHandlerTest
     {
         [Fact]
-        public void AddUnregisteredHandlerToTheChain_ThrowsException()
+        public void AddNullHandlerToTheChain_ThrowsException()
         {
             // arrange
 
             // act
             Action action = () =>
             {
-                var _ = new CompositeHandler();
+                var _ = new CompositeHandler(new DummyHandler());
             };
 
             // assert
@@ -22,16 +22,10 @@ namespace ResponsibilityChain.Tests
 
         private class CompositeHandler : Handler<int, int>
         {
-            public CompositeHandler()
-                : base(new NullServiceProvider())
+            public CompositeHandler(DummyHandler dummyHandler)
             {
-                AddHandler<DummyHandler>();
+                AddHandler<DummyHandler>(null);
             }
-        }
-
-        private class NullServiceProvider : IServiceProvider
-        {
-            public object GetService(Type serviceType) => null;
         }
 
         private class DummyHandler : IHandler<int, int>

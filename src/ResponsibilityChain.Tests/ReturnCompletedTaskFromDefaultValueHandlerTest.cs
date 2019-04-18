@@ -8,22 +8,21 @@ namespace ResponsibilityChain.Tests
     {
         private class CompositeFooAsyncHandler : Handler<int, Task<string>>
         {
-            public CompositeFooAsyncHandler()
-                : base(ActivatorServiceProvider.Instance)
+            public CompositeFooAsyncHandler(BarHandler barHandler)
             {
-                AddHandler(new BarHandler());
+                AddHandler(barHandler);
                 AddHandler(ReturnCompletedTaskFromDefaultValueHandler<int, string>.Instance);
                 AddHandler(ThrowNotSupportedHandler<int, Task<string>>.Instance);
             }
+        }
 
-            private class BarHandler : IHandler<int, Task<string>>
+        private class BarHandler : IHandler<int, Task<string>>
+        {
+            public async Task<string> Handle(int input, Func<int, Task<string>> next)
             {
-                public async Task<string> Handle(int input, Func<int, Task<string>> next)
-                {
-                    await Task.Delay(100);
+                await Task.Delay(100);
 
-                    return await next(input);
-                }
+                return await next(input);
             }
         }
 
@@ -32,7 +31,7 @@ namespace ResponsibilityChain.Tests
             GivenThisShortCircuitHandlerPlacedInTheMiddleOfTheChain_ReturnsCompletedTaskWithDefaultValueWithoutInvokingNextHandler()
         {
             // arrange
-            var handler = new CompositeFooAsyncHandler();
+            var handler = new CompositeFooAsyncHandler(new BarHandler());
 
             // act
             var result = await handler.Handle(111, null);

@@ -7,11 +7,10 @@ namespace ResponsibilityChain.Tests
     {
         private class CompositeWithNoNestedHandler : Handler<int, int>
         {
-            public CompositeWithNoNestedHandler()
-                : base(new MockedServiceProvider())
+            public CompositeWithNoNestedHandler(SimpleHandler1 simpleHandler1, SimpleHandler2 simpleHandler2)
             {
-                AddHandler<SimpleHandler1>();
-                AddHandler<SimpleHandler2>();
+                AddHandler(simpleHandler1);
+                AddHandler(simpleHandler2);
             }
         }
 
@@ -27,31 +26,23 @@ namespace ResponsibilityChain.Tests
 
         private class CompositeWithOneLevelNestedHandler : Handler<int, int>
         {
-            public CompositeWithOneLevelNestedHandler()
-                : base(new MockedServiceProvider())
+            public CompositeWithOneLevelNestedHandler(
+                CompositeWithNoNestedHandler compositeWithNoNestedHandler,
+                SimpleHandler1 simpleHandler1)
             {
-                AddHandler<CompositeWithNoNestedHandler>();
-                AddHandler<SimpleHandler1>();
+                AddHandler(compositeWithNoNestedHandler);
+                AddHandler(simpleHandler1);
             }
         }
 
         private class CompositeWithTwoLevelNestedHandler : Handler<int, int>
         {
-            public CompositeWithTwoLevelNestedHandler()
-                : base(new MockedServiceProvider())
+            public CompositeWithTwoLevelNestedHandler(
+                CompositeWithOneLevelNestedHandler compositeWithOneLevelNestedHandler,
+                SimpleHandler1 simpleHandler1)
             {
-                AddHandler<CompositeWithOneLevelNestedHandler>();
-                AddHandler<SimpleHandler1>();
-            }
-        }
-
-        private class MockedServiceProvider : IServiceProvider
-        {
-            public object GetService(Type serviceType)
-            {
-                return serviceType.IsAbstract || serviceType.IsInterface
-                    ? null
-                    : Activator.CreateInstance(serviceType);
+                AddHandler(compositeWithOneLevelNestedHandler);
+                AddHandler(simpleHandler1);
             }
         }
 
@@ -59,15 +50,17 @@ namespace ResponsibilityChain.Tests
         public void GivenCompositeWithNoNestedHandler_ReturnsCorrectHierarchy()
         {
             // arrange
-            var handler = new CompositeWithNoNestedHandler();
+            var handler = new CompositeWithNoNestedHandler(new SimpleHandler1(), new SimpleHandler2());
 
             // act
             var handlerDescription = handler.ToString();
 
             // assert
             Assert.Equal(
-                $"{typeof(CompositeWithNoNestedHandler)}" + Environment.NewLine +
-                $"  {typeof(SimpleHandler1)}" + Environment.NewLine +
+                $"{typeof(CompositeWithNoNestedHandler)}" +
+                Environment.NewLine +
+                $"  {typeof(SimpleHandler1)}" +
+                Environment.NewLine +
                 $"  {typeof(SimpleHandler2)}",
                 handlerDescription
             );
@@ -77,17 +70,24 @@ namespace ResponsibilityChain.Tests
         public void GivenCompositeWithOneLevelNestedHandler_ReturnsCorrectHierarchy()
         {
             // arrange
-            var handler = new CompositeWithOneLevelNestedHandler();
+            var handler = new CompositeWithOneLevelNestedHandler(
+                new CompositeWithNoNestedHandler(new SimpleHandler1(), new SimpleHandler2()),
+                new SimpleHandler1()
+            );
 
             // act
             var handlerDescription = handler.ToString();
 
             // assert
             Assert.Equal(
-                $"{typeof(CompositeWithOneLevelNestedHandler)}" + Environment.NewLine +
-                $"  {typeof(CompositeWithNoNestedHandler)}" + Environment.NewLine +
-                $"    {typeof(SimpleHandler1)}" + Environment.NewLine +
-                $"    {typeof(SimpleHandler2)}" + Environment.NewLine +
+                $"{typeof(CompositeWithOneLevelNestedHandler)}" +
+                Environment.NewLine +
+                $"  {typeof(CompositeWithNoNestedHandler)}" +
+                Environment.NewLine +
+                $"    {typeof(SimpleHandler1)}" +
+                Environment.NewLine +
+                $"    {typeof(SimpleHandler2)}" +
+                Environment.NewLine +
                 $"  {typeof(SimpleHandler1)}",
                 handlerDescription
             );
@@ -97,19 +97,34 @@ namespace ResponsibilityChain.Tests
         public void GivenCompositeWithTwoLevelNestedHandler_ReturnsCorrectHierarchy()
         {
             // arrange
-            var handler = new CompositeWithTwoLevelNestedHandler();
+            var handler = new CompositeWithTwoLevelNestedHandler(
+                new CompositeWithOneLevelNestedHandler(
+                    new CompositeWithNoNestedHandler(
+                        new SimpleHandler1(),
+                        new SimpleHandler2()
+                    ),
+                    new SimpleHandler1()
+                ),
+                new SimpleHandler1()
+            );
 
             // act
             var handlerDescription = handler.ToString();
 
             // assert
             Assert.Equal(
-                $"{typeof(CompositeWithTwoLevelNestedHandler)}" + Environment.NewLine +
-                $"  {typeof(CompositeWithOneLevelNestedHandler)}" + Environment.NewLine +
-                $"    {typeof(CompositeWithNoNestedHandler)}" + Environment.NewLine +
-                $"      {typeof(SimpleHandler1)}" + Environment.NewLine +
-                $"      {typeof(SimpleHandler2)}" + Environment.NewLine +
-                $"    {typeof(SimpleHandler1)}" + Environment.NewLine +
+                $"{typeof(CompositeWithTwoLevelNestedHandler)}" +
+                Environment.NewLine +
+                $"  {typeof(CompositeWithOneLevelNestedHandler)}" +
+                Environment.NewLine +
+                $"    {typeof(CompositeWithNoNestedHandler)}" +
+                Environment.NewLine +
+                $"      {typeof(SimpleHandler1)}" +
+                Environment.NewLine +
+                $"      {typeof(SimpleHandler2)}" +
+                Environment.NewLine +
+                $"    {typeof(SimpleHandler1)}" +
+                Environment.NewLine +
                 $"  {typeof(SimpleHandler1)}",
                 handlerDescription
             );
