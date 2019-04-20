@@ -6,7 +6,7 @@
 
 Handlers should implement `IHandler<TIn, TOut>` interface
 
-```
+```cs
 public interface IHandler<TIn, TOut>
 {
     TOut Handle(TIn input, Func<TIn, TOut> next);
@@ -15,7 +15,7 @@ public interface IHandler<TIn, TOut>
 
 Example
 
-```
+```cs
 /// <summary>
 ///     Parses work log to minutes.
 ///     E.g. "30m" => 30 minutes
@@ -44,7 +44,7 @@ public class MinuteParser : IHandler<string, int>
 
 Composite handler then extends Handler<TIn, TOut> and add child handlers via its constructor.
 
-```
+```cs
 public class WorkLogParser : IHandler<string, int>
 {
     public WorkLogParser(WorkLogValidator validator, IndividualUnitParser individualUnitParser)
@@ -57,7 +57,7 @@ public class WorkLogParser : IHandler<string, int>
 
 Composite handler can have deeply nested handlers as much as needed.
 
-```
+```cs
 var parser = new WorkLogParser(
     new WorkLogValidator(
         new WorkLogMustNotBeNullOrEmptyRule(),
@@ -75,7 +75,7 @@ var parser = new WorkLogParser(
 
 ### Step 3: Execute
 
-```
+```cs
 // work log in minutes
 int workLog = parser.Handle("1w 2d 4h 30m", next: null);
 
@@ -86,7 +86,7 @@ Assert.Equal(3630, workLog);
 
 If the last handler in the chain cannot handle the input, the composite handler will throw an exception of type `NotSupportedException`. The chain can be explicitly configured via its constructor
 
-```
+```cs
 public class WorkLogParser : IHandler<string, int>
 {
     public WorkLogParser(WorkLogValidator validator, IndividualUnitParser individualUnitParser)
@@ -100,7 +100,7 @@ public class WorkLogParser : IHandler<string, int>
 
 or via method invocation
 
-```
+```cs
 var workLog = parser.Handle("1w 2d 4h 30m", ThrowNotSupportedHandler<string, int>.Instance);
 ```
 
