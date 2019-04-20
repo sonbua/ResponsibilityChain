@@ -67,8 +67,7 @@ namespace ResponsibilityChain
         /// Adds a handler instance to the last position in the chain. No interception will be performed against the <paramref name="handler"/> object.
         /// </summary>
         /// <param name="handler">The handler object.</param>
-        protected void AddHandler<THandler>(THandler handler)
-            where THandler : class, IHandler<TIn, TOut>
+        protected void AddHandler(IHandler<TIn, TOut> handler)
         {
             EnsureArg.IsNotNull(handler, nameof(handler));
 

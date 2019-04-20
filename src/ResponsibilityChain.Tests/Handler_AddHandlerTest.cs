@@ -13,7 +13,7 @@ namespace ResponsibilityChain.Tests
             // act
             Action action = () =>
             {
-                var _ = new CompositeHandler(new DummyHandler());
+                var _ = new CompositeHandler(dummyHandler: null);
             };
 
             // assert
@@ -24,7 +24,7 @@ namespace ResponsibilityChain.Tests
         {
             public CompositeHandler(DummyHandler dummyHandler)
             {
-                AddHandler<DummyHandler>(null);
+                AddHandler(dummyHandler);
             }
         }
 
