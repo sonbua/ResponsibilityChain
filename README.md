@@ -84,7 +84,7 @@ Assert.Equal(3630, workLog);
 
 ## Notes
 
-If the last handler in the chain cannot handle the input, the composite handler will throw an exception of type `NotSupportedException`. The chain can be explicitly configured via its constructor
+If the last handler in the chain cannot handle the input (and it passes the input to the next handler), the composite handler will throw an exception of type `NotSupportedException` by default. This behavior can be explicitly configured via chain's constructor
 
 ```cs
 public class WorkLogParser : IHandler<string, int>
@@ -93,6 +93,7 @@ public class WorkLogParser : IHandler<string, int>
     {
         AddHandler(validator);
         AddHandler(individualUnitParser);
+        // explicitly tell the chain to use ThrowNotSupportedHandler as the last resort
         AddHandler(ThrowNotSupportedHandler<string, int>.Instance);
     }
 }
@@ -104,7 +105,7 @@ or via method invocation
 var workLog = parser.Handle("1w 2d 4h 30m", ThrowNotSupportedHandler<string, int>.Instance);
 ```
 
-There also are other built-in utility handlers:
+There are also other built-in last resort handlers:
 * `ReturnDefaultValueHandler`
 * `ReturnCompletedTaskHandler`
 * `ReturnCompletedTaskFromDefaultValueHandler`
