@@ -21,7 +21,7 @@ namespace ResponsibilityChain.Tests
                         new ThereShouldBeNoUnitDuplicationRule(),
                         new UnitsMustBeInDescendingOrderRule()
                     ),
-                    new TechnicalLeaderParser(
+                    new IndividualUnitParser(
                         new HourParser(),
                         new MinuteParser()
                     )
@@ -73,10 +73,10 @@ namespace ResponsibilityChain.Tests
 
         private class WorkLogParser : Handler<string, int>, IWorkLogParser
         {
-            public WorkLogParser(WorkLogValidator workLogValidator, TechnicalLeaderParser technicalLeaderParser)
+            public WorkLogParser(WorkLogValidator workLogValidator, IndividualUnitParser individualUnitParser)
             {
                 AddHandler(workLogValidator);
-                AddHandler(technicalLeaderParser);
+                AddHandler(individualUnitParser);
             }
         }
 
@@ -149,9 +149,9 @@ namespace ResponsibilityChain.Tests
             }
         }
 
-        private class TechnicalLeaderParser : Handler<string, int>, IWorkLogParser
+        private class IndividualUnitParser : Handler<string, int>, IWorkLogParser
         {
-            public TechnicalLeaderParser(HourParser hourParser, MinuteParser minuteParser)
+            public IndividualUnitParser(HourParser hourParser, MinuteParser minuteParser)
             {
                 AddHandler(hourParser);
                 AddHandler(minuteParser);
