@@ -42,10 +42,10 @@ public class MinuteParser : IHandler<string, int>
 
 ### Step 2: Compose
 
-Composite handler then extends Handler<TIn, TOut> and add child handlers via its constructor.
+A composite handler then extends `Handler<TIn, TOut>` and add child handlers via its constructor
 
 ```cs
-public class WorkLogParser : IHandler<string, int>
+public class WorkLogParser : Handler<string, int>
 {
     public WorkLogParser(WorkLogValidator validator, IndividualUnitParser individualUnitParser)
     {
@@ -55,7 +55,7 @@ public class WorkLogParser : IHandler<string, int>
 }
 ```
 
-Composite handler can have deeply nested handlers as much as needed.
+A composite handler can have as many nested handlers as needed. Support for deeply nested handlers is a natural progression.
 
 ```cs
 var parser = new WorkLogParser(
@@ -105,7 +105,7 @@ or via method invocation
 var workLog = parser.Handle("1w 2d 4h 30m", ThrowNotSupportedHandler<string, int>.Instance);
 ```
 
-There are also other built-in last resort handlers:
+There are also other built-in last resort handlers
 * `ReturnDefaultValueHandler`
 * `ReturnCompletedTaskHandler`
 * `ReturnCompletedTaskFromDefaultValueHandler`
