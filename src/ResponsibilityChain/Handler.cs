@@ -64,7 +64,7 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// Adds a handler instance to the last position in the chain. No interception will be performed against the <paramref name="handler"/> object.
+        /// Adds a handler instance to the last position in the chain.
         /// </summary>
         /// <param name="handler">The handler object.</param>
         protected void AddHandler(IHandler<TIn, TOut> handler)
