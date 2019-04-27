@@ -5,7 +5,7 @@ namespace ResponsibilityChain
 {
     /// <summary>
     /// <para>Serves as a marker for all handlers (processing elements) in the chain, e.g. for dependency registrations, etc.</para>
-    /// <para>For most cases, the generic version <see cref="IHandler{TIn,TOut}"/> should be the one to be implemented, and not this one.</para>
+    /// <para>In most cases, the generic version <see cref="IHandler{TIn,TOut}"/> should be the one to be implemented, and not this one.</para>
     /// </summary>
     public interface IHandler
     {
