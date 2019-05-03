@@ -2,16 +2,15 @@
     <PropertyGroup>
         <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>0.7.1</PackageVersion>
+        <PackageVersion>0.1.0</PackageVersion>
         <Authors>Son Dinh Nguyen</Authors>
         <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain/</PackageProjectUrl>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ensure.That" Version="8.1.1" />
+        <ProjectReference Include="..\ResponsibilityChain\ResponsibilityChain.csproj" />
     </ItemGroup>
 </Project>

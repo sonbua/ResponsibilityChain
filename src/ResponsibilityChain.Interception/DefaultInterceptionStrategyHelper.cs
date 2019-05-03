@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ResponsibilityChain
+namespace ResponsibilityChain.Interception
 {
     /// <summary>
     /// Provides a helper method to intercept a handler, given a list of interceptors which implement

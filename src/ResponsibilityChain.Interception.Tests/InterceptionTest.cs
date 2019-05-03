@@ -7,7 +7,7 @@ using Xunit;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 
-namespace ResponsibilityChain.Tests
+namespace ResponsibilityChain.Interception.Tests
 {
     public class InterceptionTest
     {

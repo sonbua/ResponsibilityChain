@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain", "Resp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Tests", "ResponsibilityChain.Tests\ResponsibilityChain.Tests.csproj", "{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception", "ResponsibilityChain.Interception\ResponsibilityChain.Interception.csproj", "{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception.Tests", "ResponsibilityChain.Interception.Tests\ResponsibilityChain.Interception.Tests.csproj", "{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
