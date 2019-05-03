@@ -5,10 +5,10 @@
     <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageVersion>0.6.1</PackageVersion>
+    <PackageVersion>0.7.0</PackageVersion>
     <Authors>Son Dinh Nguyen</Authors>
     <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain/</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>

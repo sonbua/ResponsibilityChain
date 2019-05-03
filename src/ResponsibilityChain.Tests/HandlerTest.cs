@@ -73,10 +73,10 @@ namespace ResponsibilityChain.Tests
 
         private class WorkLogParser : Handler<string, int>, IWorkLogParser
         {
-            public WorkLogParser(WorkLogValidator workLogValidator, IndividualUnitParser individualUnitParser)
+            public WorkLogParser(WorkLogValidator validator, IndividualUnitParser parser)
             {
-                AddHandler(workLogValidator);
-                AddHandler(individualUnitParser);
+                AddHandler(validator);
+                AddHandler(parser);
             }
         }
 

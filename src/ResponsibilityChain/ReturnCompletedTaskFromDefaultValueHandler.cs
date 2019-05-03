@@ -8,28 +8,14 @@ namespace ResponsibilityChain
     /// </summary>
     /// <typeparam name="TIn">The input type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
-    public sealed class ReturnCompletedTaskFromDefaultValueHandler<TIn, TOut> : IHandler<TIn, Task<TOut>>
+    public class ReturnCompletedTaskFromDefaultValueHandler<TIn, TOut> : IHandler<TIn, Task<TOut>>
     {
-        static ReturnCompletedTaskFromDefaultValueHandler()
-        {
-        }
-
-        private ReturnCompletedTaskFromDefaultValueHandler()
-        {
-        }
-
-        /// <summary>
-        /// Singleton instance of this handler.
-        /// </summary>
-        public static ReturnCompletedTaskFromDefaultValueHandler<TIn, TOut> Instance { get; } =
-            new ReturnCompletedTaskFromDefaultValueHandler<TIn, TOut>();
-
         /// <summary>
         /// Returns a completed task with default value of <typeparamref name="TOut"/> on invocation.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public Task<TOut> Handle(TIn input, Func<TIn, Task<TOut>> next) => Task.FromResult(default(TOut));
+        public virtual Task<TOut> Handle(TIn input, Func<TIn, Task<TOut>> next) => Task.FromResult(default(TOut));
     }
 }

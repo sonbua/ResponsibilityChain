@@ -57,21 +57,31 @@ namespace ResponsibilityChain
 
             if (next == null)
             {
-                next = anInput => ThrowNotSupportedHandler<TIn, TOut>.Instance.Handle(anInput, null);
+                AddHandler(new ThrowNotSupportedHandler<TIn, TOut>());
             }
 
             return ChainedDelegate.Invoke(next).Invoke(input);
         }
 
         /// <summary>
-        /// Adds a handler instance to the last position in the chain.
+        /// <para>Performs interception to the given <paramref name="handler"/> object.</para>
+        /// <para>Then adds the intercepted handler to the last position in the chain.</para>
         /// </summary>
         /// <param name="handler">The handler object.</param>
-        protected void AddHandler(IHandler<TIn, TOut> handler)
+        protected void AddHandler<THandler>(THandler handler)
+            where THandler : class, IHandler<TIn, TOut>
         {
             EnsureArg.IsNotNull(handler, nameof(handler));
 
-            _handlers.Add(handler);
+            var intercepted = InterceptHandler(handler);
+
+            _handlers.Add(intercepted);
+        }
+
+        private static IHandler<TIn, TOut> InterceptHandler<THandler>(THandler handler)
+            where THandler : class, IHandler<TIn, TOut>
+        {
+            return InterceptionStrategy.Current.Intercept<THandler, TIn, TOut>(handler);
         }
 
         /// <summary>
@@ -97,7 +107,7 @@ namespace ResponsibilityChain
         /// <returns></returns>
         private IEnumerable<Node> AsNodes(int indentLevel = 0)
         {
-            yield return new Node(GetType().FullName, indentLevel);
+            yield return new Node(GetType().ToString(), indentLevel);
 
             var nextIndentLevel = indentLevel + 1;
 
@@ -112,7 +122,7 @@ namespace ResponsibilityChain
                 }
                 else
                 {
-                    yield return new Node(handler.GetType().FullName, nextIndentLevel);
+                    yield return new Node(handler.ToString(), nextIndentLevel);
                 }
             }
         }

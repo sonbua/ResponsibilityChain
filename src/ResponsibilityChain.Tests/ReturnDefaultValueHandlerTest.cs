@@ -10,7 +10,7 @@ namespace ResponsibilityChain.Tests
         public void IntegerOutputExpected_ReturnsZero()
         {
             // arrange
-            var handler = ReturnDefaultValueHandler<string, int>.Instance;
+            var handler = new ReturnDefaultValueHandler<string, int>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -23,7 +23,7 @@ namespace ResponsibilityChain.Tests
         public void StringOutputExpected_ReturnsNull()
         {
             // arrange
-            var handler = ReturnDefaultValueHandler<string, string>.Instance;
+            var handler = new ReturnDefaultValueHandler<string, string>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -36,7 +36,7 @@ namespace ResponsibilityChain.Tests
         public void DateTimeOutputExpected_ReturnsDateTimeMin()
         {
             // arrange
-            var handler = ReturnDefaultValueHandler<string, DateTime>.Instance;
+            var handler = new ReturnDefaultValueHandler<string, DateTime>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -49,7 +49,7 @@ namespace ResponsibilityChain.Tests
         public void ReferenceTypeObjectOutputExpected_ReturnsNull()
         {
             // arrange
-            var handler = ReturnDefaultValueHandler<string, StringBuilder>.Instance;
+            var handler = new ReturnDefaultValueHandler<string, StringBuilder>();
 
             // act
             var output = handler.Handle("some input", next: null);

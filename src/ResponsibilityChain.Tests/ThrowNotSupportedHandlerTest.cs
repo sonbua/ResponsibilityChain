@@ -10,7 +10,7 @@ namespace ResponsibilityChain.Tests
         public void IntegerOutputExpected_ThrowsNotSupportedException()
         {
             // arrange
-            var handler = ThrowNotSupportedHandler<string, int>.Instance;
+            var handler = new ThrowNotSupportedHandler<string, int>();
 
             // act
             Func<object> testDelegate = () => handler.Handle("some input", null);
@@ -23,7 +23,7 @@ namespace ResponsibilityChain.Tests
         public void StringOutputExpected_ThrowsNotSupportedException()
         {
             // arrange
-            var handler = ThrowNotSupportedHandler<string, string>.Instance;
+            var handler = new ThrowNotSupportedHandler<string, string>();
 
             // act
             Func<object> testDelegate = () => handler.Handle("some input", null);
@@ -36,7 +36,7 @@ namespace ResponsibilityChain.Tests
         public void ReferenceTypeOutputExpected_ThrowsNotSupportedException()
         {
             // arrange
-            var handler = ThrowNotSupportedHandler<string, StringBuilder>.Instance;
+            var handler = new ThrowNotSupportedHandler<string, StringBuilder>();
 
             // act
             Func<object> testDelegate = () => handler.Handle("some input", null);

@@ -11,8 +11,8 @@ namespace ResponsibilityChain.Tests
             public CompositeFooAsyncHandler(BarHandler barHandler)
             {
                 AddHandler(barHandler);
-                AddHandler(ReturnCompletedTaskFromDefaultValueHandler<int, string>.Instance);
-                AddHandler(ThrowNotSupportedHandler<int, Task<string>>.Instance);
+                AddHandler(new ReturnCompletedTaskFromDefaultValueHandler<int, string>());
+                AddHandler(new ThrowNotSupportedHandler<int, Task<string>>());
             }
         }
 

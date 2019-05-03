@@ -3,6 +3,7 @@ using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
+    // ReSharper disable once InconsistentNaming
     public class Handler_ToStringTest
     {
         private class CompositeWithNoNestedHandler : Handler<int, int>
@@ -71,7 +72,10 @@ namespace ResponsibilityChain.Tests
         {
             // arrange
             var handler = new CompositeWithOneLevelNestedHandler(
-                new CompositeWithNoNestedHandler(new SimpleHandler1(), new SimpleHandler2()),
+                new CompositeWithNoNestedHandler(
+                    new SimpleHandler1(),
+                    new SimpleHandler2()
+                ),
                 new SimpleHandler1()
             );
 

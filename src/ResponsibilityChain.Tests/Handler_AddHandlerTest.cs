@@ -3,6 +3,7 @@ using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
+    // ReSharper disable once InconsistentNaming
     public class Handler_AddHandlerTest
     {
         [Fact]
@@ -13,7 +14,7 @@ namespace ResponsibilityChain.Tests
             // act
             Action action = () =>
             {
-                var _ = new CompositeHandler(dummyHandler: null);
+                var _ = new CompositeHandler(null);
             };
 
             // assert
