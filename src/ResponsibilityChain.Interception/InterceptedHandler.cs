@@ -1,6 +1,6 @@
 using System;
 
-namespace ResponsibilityChain
+namespace ResponsibilityChain.Interception
 {
     internal class InterceptedHandler<THandler, TIn, TOut> : IHandler<TIn, TOut>
         where THandler : IHandler<TIn, TOut>

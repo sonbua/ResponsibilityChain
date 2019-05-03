@@ -1,6 +1,6 @@
 using System;
 
-namespace ResponsibilityChain
+namespace ResponsibilityChain.Interception
 {
     // ReSharper disable once UnusedTypeParameter
     /// <summary>
