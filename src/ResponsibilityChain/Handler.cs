@@ -47,7 +47,7 @@ namespace ResponsibilityChain
         /// <para>It is done by first creating a pipeline execution delegate from existing handlers then invoking that delegate against the input.</para>
         /// </summary>
         /// <param name="input">The input object.</param>
-        /// <param name="next">The next handler in the chain. If null is provided, <see cref="ThrowNotSupportedHandler{TIn,TOut}"/> will be set as the end of the chain.</param>
+        /// <param name="next">The next handler in the chain. If null is provided, <see cref="ThrowNotSupported{TIn,TOut}"/> will be set as the end of the chain.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if handler list is null.</exception>
         /// <exception cref="ArgumentException">Thrown if handler list is empty.</exception>
@@ -57,7 +57,7 @@ namespace ResponsibilityChain
 
             if (next == null)
             {
-                AddHandler(new ThrowNotSupportedHandler<TIn, TOut>());
+                AddHandler(new ThrowNotSupported<TIn, TOut>());
             }
 
             return ChainedDelegate.Invoke(next).Invoke(input);

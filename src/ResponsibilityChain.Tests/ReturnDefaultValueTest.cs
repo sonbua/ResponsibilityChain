@@ -4,13 +4,13 @@ using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
-    public class ReturnDefaultValueHandlerTest
+    public class ReturnDefaultValueTest
     {
         [Fact]
         public void IntegerOutputExpected_ReturnsZero()
         {
             // arrange
-            var handler = new ReturnDefaultValueHandler<string, int>();
+            var handler = new ReturnDefaultValue<string, int>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -23,7 +23,7 @@ namespace ResponsibilityChain.Tests
         public void StringOutputExpected_ReturnsNull()
         {
             // arrange
-            var handler = new ReturnDefaultValueHandler<string, string>();
+            var handler = new ReturnDefaultValue<string, string>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -36,7 +36,7 @@ namespace ResponsibilityChain.Tests
         public void DateTimeOutputExpected_ReturnsDateTimeMin()
         {
             // arrange
-            var handler = new ReturnDefaultValueHandler<string, DateTime>();
+            var handler = new ReturnDefaultValue<string, DateTime>();
 
             // act
             var output = handler.Handle("some input", next: null);
@@ -49,7 +49,7 @@ namespace ResponsibilityChain.Tests
         public void ReferenceTypeObjectOutputExpected_ReturnsNull()
         {
             // arrange
-            var handler = new ReturnDefaultValueHandler<string, StringBuilder>();
+            var handler = new ReturnDefaultValue<string, StringBuilder>();
 
             // act
             var output = handler.Handle("some input", next: null);

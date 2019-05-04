@@ -7,7 +7,7 @@ namespace ResponsibilityChain
     /// </summary>
     /// <typeparam name="TIn">The input type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
-    public class ThrowNotSupportedHandler<TIn, TOut> : IHandler<TIn, TOut>
+    public class ThrowNotSupported<TIn, TOut> : IHandler<TIn, TOut>
     {
         /// <summary>
         /// Throws <see cref="NotSupportedException"/> on invocation.

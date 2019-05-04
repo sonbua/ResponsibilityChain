@@ -7,7 +7,7 @@ namespace ResponsibilityChain
     /// </summary>
     /// <typeparam name="TIn">The input type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
-    public class ReturnDefaultValueHandler<TIn, TOut> : IHandler<TIn, TOut>
+    public class ReturnDefaultValue<TIn, TOut> : IHandler<TIn, TOut>
     {
         /// <summary>
         /// Returns default value of <typeparamref name="TOut"/> on invocation.
@@ -15,6 +15,6 @@ namespace ResponsibilityChain
         /// <param name="input"></param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public virtual TOut Handle(TIn input, Func<TIn, TOut> next) => default;
+        public virtual TOut Handle(TIn input, Func<TIn, TOut> next) => default(TOut);
     }
 }

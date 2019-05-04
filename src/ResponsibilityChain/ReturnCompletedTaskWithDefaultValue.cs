@@ -8,7 +8,7 @@ namespace ResponsibilityChain
     /// </summary>
     /// <typeparam name="TIn">The input type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
-    public class ReturnCompletedTaskFromDefaultValueHandler<TIn, TOut> : IHandler<TIn, Task<TOut>>
+    public class ReturnCompletedTaskWithDefaultValue<TIn, TOut> : IHandler<TIn, Task<TOut>>
     {
         /// <summary>
         /// Returns a completed task with default value of <typeparamref name="TOut"/> on invocation.

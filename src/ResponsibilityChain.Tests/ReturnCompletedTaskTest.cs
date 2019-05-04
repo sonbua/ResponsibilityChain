@@ -4,15 +4,15 @@ using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
-    public class ReturnCompletedTaskHandlerTest
+    public class ReturnCompletedTaskTest
     {
         private class CompositeFooAsyncHandler : Handler<int, Task>
         {
-            public CompositeFooAsyncHandler(BarHandler barHandler)
+            public CompositeFooAsyncHandler(BarHandler barHandler, ReturnCompletedTask<int> returnCompletedTask)
             {
                 AddHandler(barHandler);
-                AddHandler(new ReturnCompletedTaskHandler<int>());
-                AddHandler(new ThrowNotSupportedHandler<int, Task>());
+                AddHandler(returnCompletedTask);
+                AddHandler(new ThrowNotSupported<int, Task>());
             }
         }
 
@@ -21,7 +21,7 @@ namespace ResponsibilityChain.Tests
             GivenThisShortCircuitHandlerPlacedInTheMiddleOfTheChain_ReturnsCompletedTaskWithoutThrowingException()
         {
             // arrange
-            var handler = new CompositeFooAsyncHandler(new BarHandler());
+            var handler = new CompositeFooAsyncHandler(new BarHandler(), new ReturnCompletedTask<int>());
 
             // act
             await handler.Handle(111, null);
