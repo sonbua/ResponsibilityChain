@@ -84,17 +84,20 @@ Assert.Equal(3630, workLog);
 
 ## Notes
 
-If the last handler in the chain cannot handle the input (and it passes the input to the next handler), the composite handler will throw an exception of type `NotSupportedException` by default. This behavior can be explicitly configured via chain's constructor
+If the last handler in the chain cannot handle the input (and it passes the input to the next handler), the composite handler will throw an exception of type `NotSupportedException` by default. This can be made explicitly via chain's constructor
 
 ```cs
 public class WorkLogParser : IHandler<string, int>
 {
-    public WorkLogParser(WorkLogValidator validator, IndividualUnitParser individualUnitParser)
+    public WorkLogParser(
+        WorkLogValidator validator,
+        IndividualUnitParser individualUnitParser,
+        ThrowNotSupported<string, int> throwNotSupported)
     {
         AddHandler(validator);
         AddHandler(individualUnitParser);
-        // explicitly tell the chain to use ThrowNotSupportedHandler as the last resort
-        AddHandler(ThrowNotSupportedHandler<string, int>.Instance);
+        // explicitly tell the chain to use ThrowNotSupported as the last resort
+        AddHandler(throwNotSupported);
     }
 }
 ```
@@ -102,10 +105,10 @@ public class WorkLogParser : IHandler<string, int>
 or via method invocation
 
 ```cs
-var workLog = parser.Handle("1w 2d 4h 30m", ThrowNotSupportedHandler<string, int>.Instance);
+var workLog = parser.Handle("1w 2d 4h 30m", new ThrowNotSupported<string, int>().Handle);
 ```
 
 There are also other built-in last resort handlers
-* `ReturnDefaultValueHandler`
-* `ReturnCompletedTaskHandler`
-* `ReturnCompletedTaskFromDefaultValueHandler`
+* `ReturnDefaultValue`
+* `ReturnCompletedTask`
+* `ReturnCompletedTaskWithDefaultValue`
