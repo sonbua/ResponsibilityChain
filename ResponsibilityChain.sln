@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain", "ResponsibilityChain\ResponsibilityChain.csproj", "{BB925365-43AC-4D30-B210-BD52AE9DF020}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain", "src\ResponsibilityChain\ResponsibilityChain.csproj", "{BB925365-43AC-4D30-B210-BD52AE9DF020}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Tests", "ResponsibilityChain.Tests\ResponsibilityChain.Tests.csproj", "{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Tests", "test\ResponsibilityChain.Tests\ResponsibilityChain.Tests.csproj", "{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception", "ResponsibilityChain.Interception\ResponsibilityChain.Interception.csproj", "{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception", "src\ResponsibilityChain.Interception\ResponsibilityChain.Interception.csproj", "{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception.Tests", "ResponsibilityChain.Interception.Tests\ResponsibilityChain.Interception.Tests.csproj", "{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception.Tests", "test\ResponsibilityChain.Interception.Tests\ResponsibilityChain.Interception.Tests.csproj", "{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
