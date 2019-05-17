@@ -137,16 +137,12 @@ namespace ResponsibilityChain.Interception.Tests
             public void then_ignores_all_interceptors()
             {
                 // arrange
-                StopwatchInterceptor.LogMessages?.Clear();
-                DebugInterceptor.LogMessages?.Clear();
                 var handler = new CompositeHandler(new CoreBusinessHandler(), new FallbackHandler());
 
                 // act
                 var result = handler.Handle(112, null);
 
                 // assert
-                StopwatchInterceptor.LogMessages.Should().BeNullOrEmpty();
-                DebugInterceptor.LogMessages.Should().BeNullOrEmpty();
                 result.Should().Be("business handled");
             }
         }
