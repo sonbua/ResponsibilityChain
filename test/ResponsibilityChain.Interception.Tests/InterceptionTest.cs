@@ -59,6 +59,76 @@ namespace ResponsibilityChain.Interception.Tests
             {
                 InterceptionStrategy.SetStrategy(new NoopInterceptionStrategy());
             }
+
+            private class StopwatchInterceptor : IInterceptor<CoreBusinessHandler, int, string>
+            {
+                static StopwatchInterceptor()
+                {
+                    LogMessages = new List<string>();
+                }
+
+                public static List<string> LogMessages { get; }
+
+                public string Intercept(IHandler<int, string> handler, int input, Func<int, string> next)
+                {
+                    var stopwatch = Stopwatch.StartNew();
+
+                    LogMessages.Add(
+                        $"DEBUG {typeof(CoreBusinessHandler)} started at {DateTime.Now.ToLongTimeString()}"
+                    );
+                    stopwatch.Start();
+
+                    var output = handler.Handle(input, next);
+
+                    stopwatch.Stop();
+                    LogMessages.Add(
+                        $"DEBUG {typeof(CoreBusinessHandler)} completed at {DateTime.Now.ToLongTimeString()}"
+                    );
+                    LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} elapsed {stopwatch.ElapsedMilliseconds} ms");
+
+                    return output;
+                }
+            }
+
+            private class DebugInterceptor : IInterceptor<CoreBusinessHandler, int, string>
+            {
+                static DebugInterceptor()
+                {
+                    LogMessages = new List<string>();
+                }
+
+                public static List<string> LogMessages { get; }
+
+                public string Intercept(IHandler<int, string> handler, int input, Func<int, string> next)
+                {
+                    LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} input = {input}");
+                    string output;
+
+                    try
+                    {
+                        output = handler.Handle(input, next);
+                    }
+                    catch (Exception exception)
+                    {
+                        LogMessages.Add($"error: {exception.Message}");
+                        throw;
+                    }
+
+                    LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} > {output}");
+
+                    return output;
+                }
+            }
+
+            private class FeatureOptedOutInterceptor<THandler, TIn, TOut> : IInterceptor<THandler, TIn, TOut>
+                where THandler : IHandler<TIn, TOut>
+            {
+                public TOut Intercept(IHandler<TIn, TOut> handler, TIn input, Func<TIn, TOut> next)
+                {
+                    // user chooses to ignore this feature
+                    return next(input);
+                }
+            }
         }
 
         public class given_no_configuration_to_the_framework : InterceptionTest
@@ -99,72 +169,6 @@ namespace ResponsibilityChain.Interception.Tests
                     );
 
                 return DefaultInterceptionStrategyHelper.Intercept(handler, interceptors);
-            }
-        }
-
-        private class StopwatchInterceptor : IInterceptor<CoreBusinessHandler, int, string>
-        {
-            static StopwatchInterceptor()
-            {
-                LogMessages = new List<string>();
-            }
-
-            public static List<string> LogMessages { get; }
-
-            public string Intercept(IHandler<int, string> handler, int input, Func<int, string> next)
-            {
-                var stopwatch = Stopwatch.StartNew();
-
-                LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} started at {DateTime.Now.ToLongTimeString()}");
-                stopwatch.Start();
-
-                var output = handler.Handle(input, next);
-
-                stopwatch.Stop();
-                LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} completed at {DateTime.Now.ToLongTimeString()}");
-                LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} elapsed {stopwatch.ElapsedMilliseconds} ms");
-
-                return output;
-            }
-        }
-
-        private class DebugInterceptor : IInterceptor<CoreBusinessHandler, int, string>
-        {
-            static DebugInterceptor()
-            {
-                LogMessages = new List<string>();
-            }
-
-            public static List<string> LogMessages { get; }
-
-            public string Intercept(IHandler<int, string> handler, int input, Func<int, string> next)
-            {
-                LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} input = {input}");
-                string output;
-
-                try
-                {
-                    output = handler.Handle(input, next);
-                }
-                catch (Exception exception)
-                {
-                    LogMessages.Add($"error: {exception.Message}");
-                    throw;
-                }
-
-                LogMessages.Add($"DEBUG {typeof(CoreBusinessHandler)} > {output}");
-
-                return output;
-            }
-        }
-
-        private class FeatureOptedOutInterceptor<THandler, TIn, TOut> : IInterceptor<THandler, TIn, TOut>
-            where THandler : IHandler<TIn, TOut>
-        {
-            public TOut Intercept(IHandler<TIn, TOut> handler, TIn input, Func<TIn, TOut> next)
-            {
-                // user chooses to ignore this feature
-                return next(input);
             }
         }
 
