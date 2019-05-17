@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 
@@ -127,6 +128,98 @@ namespace ResponsibilityChain.Interception.Tests
                 {
                     // user chooses to ignore this feature
                     return next(input);
+                }
+            }
+        }
+
+        public class given_an_interception_strategy_to_measure_execution_time : InterceptionTest, IDisposable
+        {
+            public given_an_interception_strategy_to_measure_execution_time(ITestOutputHelper testOutputHelper)
+            {
+                InterceptionStrategy.SetStrategy(
+                    new FakeInterceptionStrategy(new MockServiceProvider(testOutputHelper))
+                );
+            }
+
+            private class MockServiceProvider : IServiceProvider
+            {
+                private readonly ITestOutputHelper _testOutputHelper;
+
+                public MockServiceProvider(ITestOutputHelper testOutputHelper)
+                {
+                    _testOutputHelper = testOutputHelper;
+                }
+
+                public object GetService(Type serviceType)
+                {
+                    if (typeof(IEnumerable<IInterceptor<CoreBusinessHandler, int, string>>).IsAssignableFrom(
+                        serviceType
+                    ))
+                    {
+                        return new IInterceptor<CoreBusinessHandler, int, string>[]
+                        {
+                            new StopwatchInterceptor(_testOutputHelper)
+                        };
+                    }
+
+                    return ActivatorServiceProvider.Instance.GetService(serviceType);
+                }
+            }
+
+            [Fact]
+            public void then_prints_out_execution_time_of_each_handler()
+            {
+                // arrange
+                var handler = new CompositeHandler(new CoreBusinessHandler(), new FallbackHandler());
+
+                // act
+                var result = handler.Handle(111, null);
+
+                // assert
+                result.Should().Be("business handled");
+            }
+
+            public void Dispose()
+            {
+                InterceptionStrategy.SetStrategy(new NoopInterceptionStrategy());
+            }
+
+            private class StopwatchInterceptor : IInterceptor<CoreBusinessHandler, int, string>
+            {
+                private readonly ITestOutputHelper _testOutputHelper;
+
+                public StopwatchInterceptor(ITestOutputHelper testOutputHelper)
+                {
+                    _testOutputHelper = testOutputHelper;
+                }
+
+                public string Intercept(IHandler<int, string> handler, int input, Func<int, string> next)
+                {
+                    var stopwatch = new Stopwatch();
+
+                    Func<int, string> interceptedNext = i =>
+                    {
+                        stopwatch.Stop();
+
+                        _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds.ToString() + " ms");
+
+                        stopwatch.Start();
+
+                        return next(i);
+                    };
+
+                    stopwatch.Start();
+
+                    var result = handler.Handle(input, interceptedNext);
+
+                    if (stopwatch.IsRunning)
+                    {
+                        stopwatch.Stop();
+
+                        _testOutputHelper.WriteLine(stopwatch.ElapsedMilliseconds + " ms");
+                    }
+
+                    return result;
                 }
             }
         }
