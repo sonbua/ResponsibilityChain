@@ -13,6 +13,7 @@ namespace ResponsibilityChain
     public abstract class Handler<TIn, TOut> : IHandler<TIn, TOut>
     {
         private readonly List<IHandler<TIn, TOut>> _handlers;
+        private Func<Func<TIn, TOut>, Func<TIn, TOut>> _chainedDelegate;
 
         /// <summary>
         /// </summary>
@@ -28,6 +29,11 @@ namespace ResponsibilityChain
         {
             get
             {
+                if (_chainedDelegate != null)
+                {
+                    return _chainedDelegate;
+                }
+
                 Func<Func<TIn, TOut>, Func<TIn, TOut>> chainedDelegate = next => next;
 
                 for (var index = _handlers.Count - 1; index >= 0; index--)
@@ -38,7 +44,7 @@ namespace ResponsibilityChain
                     chainedDelegate = next => input => handler.Handle(input, chainedDelegateCloned(next));
                 }
 
-                return chainedDelegate;
+                return _chainedDelegate = chainedDelegate;
             }
         }
 
