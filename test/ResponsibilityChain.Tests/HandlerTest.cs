@@ -69,6 +69,19 @@ namespace ResponsibilityChain.Tests
                 // assert
                 Assert.Throws<ArgumentException>(testDelegate);
             }
+
+            [Theory]
+            [InlineData("1d")]
+            public void GivenUnknownUnit_ThrowsNotSupportedException(string workLog)
+            {
+                // arrange
+
+                // act
+                Action testDelegate = () => _parser.Handle(workLog, null);
+
+                // assert
+                Assert.Throws<NotSupportedException>(testDelegate);
+            }
         }
 
         private class WorkLogParser : Handler<string, int>, IWorkLogParser
@@ -128,7 +141,7 @@ namespace ResponsibilityChain.Tests
 
             static UnitsMustBeInDescendingOrderRule()
             {
-                UnitOrderMap = new Dictionary<char, int> {{'h', 2}, {'m', 1},};
+                UnitOrderMap = new Dictionary<char, int> {{'d', 3}, {'h', 2}, {'m', 1}};
             }
 
             public int Handle(string input, Func<string, int> next)

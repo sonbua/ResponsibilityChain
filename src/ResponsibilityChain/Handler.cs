@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using EnsureThat;
@@ -63,7 +63,7 @@ namespace ResponsibilityChain
 
             if (next == null)
             {
-                AddHandler(new ThrowNotSupported<TIn, TOut>());
+                next = _ => new ThrowNotSupported<TIn, TOut>().Handle(_, null);
             }
 
             return ChainedDelegate.Invoke(next).Invoke(input);
