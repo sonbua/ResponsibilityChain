@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using EnsureThat;
 
@@ -34,9 +35,10 @@ namespace ResponsibilityChain
                     return _chainedDelegate;
                 }
 
-                Func<Func<TIn, TOut>, Func<TIn, TOut>> chainedDelegate = next => next;
+                Func<Func<TIn, TOut>, Func<TIn, TOut>> chainedDelegate =
+                    next => input => _handlers.Last().Handle(input, next);
 
-                for (var index = _handlers.Count - 1; index >= 0; index--)
+                for (var index = _handlers.Count - 2; index >= 0; index--)
                 {
                     var handler = _handlers[index];
                     var chainedDelegateCloned = chainedDelegate;
