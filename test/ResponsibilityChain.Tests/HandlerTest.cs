@@ -3,17 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EnsureThat;
+using FluentAssertions;
 using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
     public class HandlerTest
     {
-        public class given_a_work_log_parser : HandlerTest
+        public class given_a_composite_handler_with_no_child_handler : HandlerTest
+        {
+            private readonly CompositeHandlerWithNoChild _handler;
+
+            public given_a_composite_handler_with_no_child_handler()
+            {
+                _handler = new CompositeHandlerWithNoChild();
+            }
+
+            [Fact]
+            public void then_passes_through_this_empty_composite_handler()
+            {
+                // act
+                var result = _handler.Handle(string.Empty, x => new ReturnDefaultValue<string, int>().Handle(x, null));
+
+                // assert
+                result.Should().Be(0);
+            }
+
+            private class CompositeHandlerWithNoChild : Handler<string, int>
+            {
+            }
+        }
+
+        public class given_a_composite_work_log_parser_with_children : HandlerTest
         {
             private readonly WorkLogParser _parser;
 
-            public given_a_work_log_parser()
+            public given_a_composite_work_log_parser_with_children()
             {
                 _parser = new WorkLogParser(
                     new WorkLogValidator(

@@ -61,11 +61,14 @@ namespace ResponsibilityChain
         /// <exception cref="ArgumentException">Thrown if handler list is empty.</exception>
         public virtual TOut Handle(TIn input, Func<TIn, TOut> next)
         {
-            EnsureArg.HasItems(_handlers, nameof(_handlers));
-
             if (next == null)
             {
                 next = _ => new ThrowNotSupported<TIn, TOut>().Handle(_, null);
+            }
+
+            if (!_handlers.Any())
+            {
+                return next(input);
             }
 
             return ChainedDelegate.Invoke(next).Invoke(input);
