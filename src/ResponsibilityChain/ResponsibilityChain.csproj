@@ -12,6 +12,6 @@
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain/</PackageProjectUrl>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ensure.That" Version="8.1.1" />
+        <PackageReference Include="Ensure.That" Version="8.1.2" />
     </ItemGroup>
 </Project>
