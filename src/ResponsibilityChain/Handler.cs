@@ -63,7 +63,9 @@ namespace ResponsibilityChain
         {
             if (next == null)
             {
-                next = _ => new ThrowNotSupported<TIn, TOut>().Handle(_, null);
+                next = _ => throw new NotSupportedException(
+                    $"Cannot handle this input. Input information: {typeof(TIn)}"
+                );
             }
 
             if (!_handlers.Any())
