@@ -7,7 +7,7 @@ using EnsureThat;
 namespace ResponsibilityChain
 {
     /// <summary>
-    /// Represents a composite handler, which comprises of multiple handlers in order to handle a more complicate input.
+    /// Represents an asynchronous composite handler, which comprises of multiple asynchronous handlers in order to handle a more complicate input.
     /// </summary>
     /// <typeparam name="TIn">The type of the input.</typeparam>
     /// <typeparam name="TOut">The type of the output.</typeparam>
