@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
+[assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
+
 namespace ResponsibilityChain.Tests
 {
     public class AsyncHandlerTest
@@ -150,6 +152,81 @@ namespace ResponsibilityChain.Tests
                     await Task.Delay(500);
 
                     return 5;
+                }
+            }
+        }
+
+        public class given_a_custom_interception_strategy : AsyncHandlerTest
+        {
+            public given_a_custom_interception_strategy()
+            {
+                InterceptionStrategy.SetStrategy(new SuppressExceptionInterceptionStrategy());
+            }
+
+            public class and_a_composite_handler : given_a_custom_interception_strategy
+            {
+                private readonly CompositeHandlerThatThrows _handlerThatThrows;
+
+                public and_a_composite_handler()
+                {
+                    _handlerThatThrows = new CompositeHandlerThatThrows(new ThrowNotSupported<string, int>());
+                }
+
+                [Fact]
+                public async Task then_composite_handler_is_intercepted()
+                {
+                    // act
+                    var result = await _handlerThatThrows.HandleAsync("any", null);
+
+                    // assert
+                    result.Should().Be(default);
+                }
+            }
+
+            private class SuppressExceptionInterceptionStrategy : IInterceptionStrategy
+            {
+                public IHandler<TIn, TOut> InterceptHandler<THandler, TIn, TOut>(THandler handler)
+                    where THandler : class, IHandler<TIn, TOut>
+                {
+                    throw new NotSupportedException();
+                }
+
+                public IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(
+                    TAsyncHandler asyncHandler)
+                    where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
+                {
+                    return new SuppressExceptionAsyncHandler<TAsyncHandler, TIn, TOut>(asyncHandler);
+                }
+
+                private class SuppressExceptionAsyncHandler<TAsyncHandler, TIn, TOut> : IAsyncHandler<TIn, TOut>
+                    where TAsyncHandler : IAsyncHandler<TIn, TOut>
+                {
+                    private readonly TAsyncHandler _asyncHandler;
+
+                    public SuppressExceptionAsyncHandler(TAsyncHandler asyncHandler)
+                    {
+                        _asyncHandler = asyncHandler;
+                    }
+
+                    public async Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next)
+                    {
+                        try
+                        {
+                            return await _asyncHandler.HandleAsync(input, next);
+                        }
+                        catch
+                        {
+                            return default;
+                        }
+                    }
+                }
+            }
+
+            private class CompositeHandlerThatThrows : AsyncHandler<string, int>
+            {
+                public CompositeHandlerThatThrows(ThrowNotSupported<string, int> child)
+                {
+                    AddHandler(child);
                 }
             }
         }

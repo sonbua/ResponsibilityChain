@@ -81,6 +81,7 @@ namespace ResponsibilityChain
         /// <para>Then adds the intercepted handler to the last position in the chain.</para>
         /// </summary>
         /// <param name="handler">The handler object.</param>
+        /// <typeparam name="THandler">The type of the handler.</typeparam>
         protected void AddHandler<THandler>(THandler handler)
             where THandler : class, IHandler<TIn, TOut>
         {
@@ -94,7 +95,7 @@ namespace ResponsibilityChain
         private static IHandler<TIn, TOut> InterceptHandler<THandler>(THandler handler)
             where THandler : class, IHandler<TIn, TOut>
         {
-            return InterceptionStrategy.Current.Intercept<THandler, TIn, TOut>(handler);
+            return InterceptionStrategy.Current.InterceptHandler<THandler, TIn, TOut>(handler);
         }
 
         /// <summary>

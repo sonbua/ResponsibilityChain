@@ -73,17 +73,25 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// <para>Performs interception to the given <paramref name="handler"/> object.</para>
+        /// <para>Performs interception to the given <paramref name="asyncHandler"/> object.</para>
         /// <para>Then adds the intercepted handler to the last position in the chain.</para>
         /// </summary>
-        /// <param name="handler"></param>
-        /// <typeparam name="THandler"></typeparam>
-        protected void AddHandler<THandler>(THandler handler)
-            where THandler : class, IAsyncHandler<TIn, TOut>
+        /// <param name="asyncHandler">The handler object.</param>
+        /// <typeparam name="TAsyncHandler"></typeparam>
+        protected void AddHandler<TAsyncHandler>(TAsyncHandler asyncHandler)
+            where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
         {
-            EnsureArg.IsNotNull(handler, nameof(handler));
+            EnsureArg.IsNotNull(asyncHandler, nameof(asyncHandler));
 
-            _handlers.Add(handler);
+            var intercepted = InterceptAsyncHandler(asyncHandler);
+
+            _handlers.Add(intercepted);
+        }
+
+        private static IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler>(TAsyncHandler asyncHandler)
+            where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
+        {
+            return InterceptionStrategy.Current.InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(asyncHandler);
         }
     }
 }

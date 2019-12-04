@@ -249,7 +249,7 @@ namespace ResponsibilityChain.Interception.Tests
                 _serviceProvider = serviceProvider;
             }
 
-            public IHandler<TIn, TOut> Intercept<THandler, TIn, TOut>(THandler handler)
+            public IHandler<TIn, TOut> InterceptHandler<THandler, TIn, TOut>(THandler handler)
                 where THandler : class, IHandler<TIn, TOut>
             {
                 var interceptors =
@@ -258,6 +258,12 @@ namespace ResponsibilityChain.Interception.Tests
                     );
 
                 return DefaultInterceptionStrategyHelper.Intercept(handler, interceptors);
+            }
+
+            public IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(TAsyncHandler asyncHandler)
+                where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
+            {
+                throw new NotSupportedException();
             }
         }
 
