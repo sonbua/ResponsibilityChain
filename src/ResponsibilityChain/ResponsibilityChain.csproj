@@ -5,10 +5,10 @@
         <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>0.8.0</PackageVersion>
+        <PackageVersion>0.8.1</PackageVersion>
         <Title>ResponsibilityChain</Title>
         <Description>Chain of Responsibility and Composite pattern combined</Description>
-        <PackageReleaseNotes>Add support for asynchronous handlers.</PackageReleaseNotes>
+        <PackageReleaseNotes>- ResponsibilityChain-9 Asynchronous handler added to a composite should be intercepted\n- ResponsibilityChain-4 IInterceptionStrategy should be injected at constructor level of Handler for simplicity and consistency</PackageReleaseNotes>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain/</PackageProjectUrl>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
