@@ -7,7 +7,7 @@ namespace ResponsibilityChain.Interception
     /// Provides a mean to intercept a <typeparamref name="THandler"/>'s execution.
     /// </summary>
     /// <typeparam name="THandler">The type of the handler.</typeparam>
-    /// <typeparam name="TIn">The type of input.</typeparam>
+    /// <typeparam name="TIn">The type of the input.</typeparam>
     /// <typeparam name="TOut">The type of the output.</typeparam>
     public interface IInterceptor<THandler, TIn, TOut>
         where THandler : IHandler<TIn, TOut>
