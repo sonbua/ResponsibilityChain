@@ -219,7 +219,7 @@ namespace ResponsibilityChain.Tests
                         }
                         catch
                         {
-                            return default;
+                            return default(TOut);
                         }
                     }
                 }
