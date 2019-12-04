@@ -182,7 +182,7 @@ namespace ResponsibilityChain.Tests
                     var result = await _handlerThatThrows.HandleAsync("any", null);
 
                     // assert
-                    result.Should().Be(default);
+                    result.Should().Be(default(int));
                 }
             }
 
