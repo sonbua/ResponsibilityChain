@@ -13,13 +13,16 @@ namespace ResponsibilityChain
     /// <typeparam name="TOut">The output type.</typeparam>
     public abstract class Handler<TIn, TOut> : IHandler<TIn, TOut>
     {
+        private readonly IInterceptionStrategy _interceptionStrategy;
         private readonly List<IHandler<TIn, TOut>> _handlers;
         private Func<Func<TIn, TOut>, Func<TIn, TOut>> _chainedDelegate;
 
         /// <summary>
         /// </summary>
-        protected Handler()
+        /// <param name="interceptionStrategy">The interception strategy, which is used to intercept all child handlers. If it is null, the <see cref="InterceptionStrategy.Default"/> will be used.</param>
+        protected Handler(IInterceptionStrategy interceptionStrategy = null)
         {
+            _interceptionStrategy = interceptionStrategy ?? InterceptionStrategy.Default;
             _handlers = new List<IHandler<TIn, TOut>>();
         }
 
@@ -92,10 +95,10 @@ namespace ResponsibilityChain
             _handlers.Add(intercepted);
         }
 
-        private static IHandler<TIn, TOut> InterceptHandler<THandler>(THandler handler)
+        private IHandler<TIn, TOut> InterceptHandler<THandler>(THandler handler)
             where THandler : class, IHandler<TIn, TOut>
         {
-            return InterceptionStrategy.Current.InterceptHandler<THandler, TIn, TOut>(handler);
+            return _interceptionStrategy.InterceptHandler<THandler, TIn, TOut>(handler);
         }
 
         /// <summary>

@@ -13,13 +13,16 @@ namespace ResponsibilityChain
     /// <typeparam name="TOut">The type of the output.</typeparam>
     public class AsyncHandler<TIn, TOut> : IAsyncHandler<TIn, TOut>
     {
+        private readonly IInterceptionStrategy _interceptionStrategy;
         private readonly List<IAsyncHandler<TIn, TOut>> _handlers;
         private Func<Func<TIn, Task<TOut>>, Func<TIn, Task<TOut>>> _chainedDelegate;
 
         /// <summary>
         /// </summary>
-        protected AsyncHandler()
+        /// <param name="interceptionStrategy">The interception strategy, which is used to intercept all child handlers. If it is null, the <see cref="InterceptionStrategy.Default"/> will be used.</param>
+        protected AsyncHandler(IInterceptionStrategy interceptionStrategy = null)
         {
+            _interceptionStrategy = interceptionStrategy ?? InterceptionStrategy.Default;
             _handlers = new List<IAsyncHandler<TIn, TOut>>();
         }
 
@@ -88,10 +91,10 @@ namespace ResponsibilityChain
             _handlers.Add(intercepted);
         }
 
-        private static IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler>(TAsyncHandler asyncHandler)
+        private IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler>(TAsyncHandler asyncHandler)
             where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
         {
-            return InterceptionStrategy.Current.InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(asyncHandler);
+            return _interceptionStrategy.InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(asyncHandler);
         }
     }
 }

@@ -6,17 +6,17 @@ using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
-[assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
-
 namespace ResponsibilityChain.Interception.Tests
 {
     public class InterceptionTest
     {
-        public class given_an_interception_strategy : InterceptionTest, IDisposable
+        public class given_an_interception_strategy : InterceptionTest
         {
+            private readonly FakeInterceptionStrategy _fakeInterceptionStrategy;
+
             public given_an_interception_strategy()
             {
-                InterceptionStrategy.SetStrategy(new FakeInterceptionStrategy(new MockServiceProvider()));
+                _fakeInterceptionStrategy = new FakeInterceptionStrategy(new MockServiceProvider());
             }
 
             private class MockServiceProvider : IServiceProvider
@@ -45,7 +45,11 @@ namespace ResponsibilityChain.Interception.Tests
                 // arrange
                 StopwatchInterceptor.LogMessages?.Clear();
                 DebugInterceptor.LogMessages?.Clear();
-                var handler = new CompositeHandler(new CoreBusinessHandler(), new FallbackHandler());
+                var handler = new CompositeHandler(
+                    new CoreBusinessHandler(),
+                    new FallbackHandler(),
+                    _fakeInterceptionStrategy
+                );
 
                 // act
                 var result = handler.Handle(111, null);
@@ -54,11 +58,6 @@ namespace ResponsibilityChain.Interception.Tests
                 StopwatchInterceptor.LogMessages.Should().NotBeNullOrEmpty();
                 DebugInterceptor.LogMessages.Should().NotBeNullOrEmpty();
                 result.Should().Be("unhandled");
-            }
-
-            public void Dispose()
-            {
-                InterceptionStrategy.SetStrategy(new NoopInterceptionStrategy());
             }
 
             private class StopwatchInterceptor : IInterceptor<CoreBusinessHandler, int, string>
@@ -132,13 +131,13 @@ namespace ResponsibilityChain.Interception.Tests
             }
         }
 
-        public class given_an_interception_strategy_to_measure_execution_time : InterceptionTest, IDisposable
+        public class given_an_interception_strategy_to_measure_execution_time : InterceptionTest
         {
+            private readonly FakeInterceptionStrategy _interceptionStrategy;
+
             public given_an_interception_strategy_to_measure_execution_time(ITestOutputHelper testOutputHelper)
             {
-                InterceptionStrategy.SetStrategy(
-                    new FakeInterceptionStrategy(new MockServiceProvider(testOutputHelper))
-                );
+                _interceptionStrategy = new FakeInterceptionStrategy(new MockServiceProvider(testOutputHelper));
             }
 
             private class MockServiceProvider : IServiceProvider
@@ -170,18 +169,17 @@ namespace ResponsibilityChain.Interception.Tests
             public void then_prints_out_execution_time_of_each_handler()
             {
                 // arrange
-                var handler = new CompositeHandler(new CoreBusinessHandler(), new FallbackHandler());
+                var handler = new CompositeHandler(
+                    new CoreBusinessHandler(),
+                    new FallbackHandler(),
+                    _interceptionStrategy
+                );
 
                 // act
                 var result = handler.Handle(111, null);
 
                 // assert
                 result.Should().Be("business handled");
-            }
-
-            public void Dispose()
-            {
-                InterceptionStrategy.SetStrategy(new NoopInterceptionStrategy());
             }
 
             private class StopwatchInterceptor : IInterceptor<CoreBusinessHandler, int, string>
@@ -230,7 +228,11 @@ namespace ResponsibilityChain.Interception.Tests
             public void then_ignores_all_interceptors()
             {
                 // arrange
-                var handler = new CompositeHandler(new CoreBusinessHandler(), new FallbackHandler());
+                var handler = new CompositeHandler(
+                    new CoreBusinessHandler(),
+                    new FallbackHandler(),
+                    InterceptionStrategy.Default
+                );
 
                 // act
                 var result = handler.Handle(112, null);
@@ -287,7 +289,11 @@ namespace ResponsibilityChain.Interception.Tests
 
         private class CompositeHandler : Handler<int, string>
         {
-            public CompositeHandler(CoreBusinessHandler coreBusinessHandler, FallbackHandler fallbackHandler)
+            public CompositeHandler(
+                CoreBusinessHandler coreBusinessHandler,
+                FallbackHandler fallbackHandler,
+                IInterceptionStrategy interceptionStrategy)
+                : base(interceptionStrategy)
             {
                 AddHandler(coreBusinessHandler);
                 AddHandler(fallbackHandler);

@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-[assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
-
 namespace ResponsibilityChain.Tests
 {
     public class AsyncHandlerTest
@@ -158,9 +156,11 @@ namespace ResponsibilityChain.Tests
 
         public class given_a_custom_interception_strategy : AsyncHandlerTest
         {
-            public given_a_custom_interception_strategy()
+            private readonly SuppressExceptionInterceptionStrategy _suppressExceptionInterceptionStrategy;
+
+            protected given_a_custom_interception_strategy()
             {
-                InterceptionStrategy.SetStrategy(new SuppressExceptionInterceptionStrategy());
+                _suppressExceptionInterceptionStrategy = new SuppressExceptionInterceptionStrategy();
             }
 
             public class and_a_composite_handler : given_a_custom_interception_strategy
@@ -169,7 +169,10 @@ namespace ResponsibilityChain.Tests
 
                 public and_a_composite_handler()
                 {
-                    _handlerThatThrows = new CompositeHandlerThatThrows(new ThrowNotSupported<string, int>());
+                    _handlerThatThrows = new CompositeHandlerThatThrows(
+                        new ThrowNotSupported<string, int>(),
+                        _suppressExceptionInterceptionStrategy
+                    );
                 }
 
                 [Fact]
@@ -224,7 +227,10 @@ namespace ResponsibilityChain.Tests
 
             private class CompositeHandlerThatThrows : AsyncHandler<string, int>
             {
-                public CompositeHandlerThatThrows(ThrowNotSupported<string, int> child)
+                public CompositeHandlerThatThrows(
+                    ThrowNotSupported<string, int> child,
+                    IInterceptionStrategy interceptionStrategy)
+                    : base(interceptionStrategy)
                 {
                     AddHandler(child);
                 }
