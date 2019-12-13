@@ -1,6 +1,6 @@
 # _Chain of Responsibility_ and _Composite_ pattern combined
 
-[![Build status](https://ci.appveyor.com/api/projects/status/dc5qp2litp7rt74k?svg=true)](https://ci.appveyor.com/project/sonbua/responsibilitychain) [![Nuget](https://img.shields.io/nuget/v/ResponsibilityChain.svg)](https://www.nuget.org/packages/ResponsibilityChain)
+[![Build status](https://ci.appveyor.com/api/projects/status/dc5qp2litp7rt74k?svg=true)](https://ci.appveyor.com/project/sonbua/responsibilitychain) [![Nuget](https://img.shields.io/nuget/v/ResponsibilityChain.svg)](https://www.nuget.org/packages/ResponsibilityChain) ![netstandard](https://img.shields.io/badge/netstandard-2.0-green) ![netframework](https://img.shields.io/badge/netfx-4.5.2-green)
 
 ## Usage
 
