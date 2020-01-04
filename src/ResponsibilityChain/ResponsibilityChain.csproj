@@ -5,10 +5,10 @@
         <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>0.9.0</PackageVersion>
+        <PackageVersion>0.9.1</PackageVersion>
         <Title>ResponsibilityChain</Title>
         <Description>Chain of Responsibility and Composite pattern combined</Description>
-        <PackageReleaseNotes>ResponsibilityChain-10 On the abstract composite handler, have a `Handle` method, which accepts `input` object only and no `next` delegate</PackageReleaseNotes>
+        <PackageReleaseNotes>Update documentation.</PackageReleaseNotes>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain</PackageProjectUrl>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
