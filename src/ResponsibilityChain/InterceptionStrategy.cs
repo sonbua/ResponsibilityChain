@@ -3,6 +3,7 @@ using EnsureThat;
 namespace ResponsibilityChain
 {
     /// <summary>
+    /// Gets or configures the default interception strategy.
     /// </summary>
     public static class InterceptionStrategy
     {

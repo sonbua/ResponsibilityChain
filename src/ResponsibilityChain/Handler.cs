@@ -18,6 +18,7 @@ namespace ResponsibilityChain
         private Func<Func<TIn, TOut>, Func<TIn, TOut>> _chainedDelegate;
 
         /// <summary>
+        /// Constructs the composite handler.
         /// </summary>
         /// <param name="interceptionStrategy">The interception strategy, which is used to intercept all child handlers. If it is null, the <see cref="InterceptionStrategy.Default"/> will be used.</param>
         protected Handler(IInterceptionStrategy interceptionStrategy = null)
