@@ -55,14 +55,14 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// <para>Invokes handlers one by one until the input has been processed by a handler and returns output, ignoring the rest of the handlers.</para>
+        /// <para>Invokes handlers one by one until the <paramref name="input"/> has been processed by a handler and returns output, ignoring the rest of the
+        /// handlers.</para>
         /// <para>It is done by first creating a pipeline execution delegate from existing handlers then invoking that delegate against the input.</para>
         /// </summary>
         /// <param name="input">The input object.</param>
         /// <param name="next">The next handler in the chain. If null is provided, <see cref="ThrowNotSupported{TIn,TOut}"/> will be set as the end of the chain.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if handler list is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if handler list is empty.</exception>
+        /// <exception cref="NotSupportedException">Thrown if none of the handlers is able to handle the <paramref name="input"/>.</exception>
         public virtual TOut Handle(TIn input, Func<TIn, TOut> next)
         {
             if (next == null)
@@ -72,12 +72,25 @@ namespace ResponsibilityChain
                 );
             }
 
-            if (!_handlers.Any())
+            if (_handlers.Count == 0)
             {
                 return next(input);
             }
 
             return ChainedDelegate.Invoke(next).Invoke(input);
+        }
+
+        /// <summary>
+        /// Invokes handlers one by one until the <paramref name="input"/> has been processed by a handler and returns output, ignoring the rest of the
+        /// handlers. If there is no handler, which can handle the <paramref name="input"/>, it will raise an exception of type
+        /// <see cref="NotSupportedException"/>.
+        /// </summary>
+        /// <param name="input">The input object.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown if none of the handlers is able to handle the <paramref name="input"/>.</exception>
+        public virtual TOut Handle(TIn input)
+        {
+            return Handle(input, null);
         }
 
         /// <summary>

@@ -19,15 +19,48 @@ namespace ResponsibilityChain.Tests
                 _handler = new CompositeHandlerWithNoChild();
             }
 
-            [Fact]
-            public void then_passes_through_this_empty_composite_handler()
+            // ReSharper disable once InconsistentNaming
+            public class when_invoking_Handle_method_with_a_next_delegate : given_a_composite_handler_with_no_child_handler
             {
-                // act
-                var nextHandler = (Func<string, int>) (x => 0);
-                var result = _handler.Handle(string.Empty, nextHandler);
+                private readonly int _result;
 
-                // assert
-                result.Should().Be(0);
+                public when_invoking_Handle_method_with_a_next_delegate()
+                {
+                    _result = _handler.Handle(string.Empty, _ => 0);
+                }
+
+                [Fact]
+                public void then_passes_through_this_empty_composite_handler()
+                {
+                    // arrange
+
+                    // act
+
+                    // assert
+                    _result.Should().Be(0);
+                }
+            }
+
+            // ReSharper disable once InconsistentNaming
+            public class when_invoking_Handle_method_without_next_delegate_argument : given_a_composite_handler_with_no_child_handler
+            {
+                private readonly Action _action;
+
+                public when_invoking_Handle_method_without_next_delegate_argument()
+                {
+                    _action = () => _handler.Handle(string.Empty);
+                }
+
+                [Fact]
+                public void then_throws_NotSupportedException()
+                {
+                    // arrange
+
+                    // act
+
+                    // assert
+                    _action.Should().Throw<NotSupportedException>();
+                }
             }
 
             private class CompositeHandlerWithNoChild : Handler<string, int>

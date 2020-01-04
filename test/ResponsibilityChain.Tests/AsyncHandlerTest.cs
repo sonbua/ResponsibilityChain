@@ -17,14 +17,48 @@ namespace ResponsibilityChain.Tests
                 _handler = new CompositeHandlerWithNoChild();
             }
 
-            [Fact]
-            public async Task then_passes_through_to_the_next_handler()
+            // ReSharper disable once InconsistentNaming
+            public class when_invoking_Handle_method_with_a_next_delegate : given_a_composite_handler_with_no_child
             {
-                // act
-                var result = await _handler.HandleAsync(string.Empty, x => Task.FromResult(0));
+                private readonly int _result;
 
-                // assert
-                result.Should().Be(0);
+                public when_invoking_Handle_method_with_a_next_delegate()
+                {
+                    _result = _handler.HandleAsync(string.Empty, _ => Task.FromResult(0)).GetAwaiter().GetResult();
+                }
+
+                [Fact]
+                public void then_passes_through_to_the_next_handler()
+                {
+                    // arrange
+
+                    // act
+
+                    // assert
+                    _result.Should().Be(0);
+                }
+            }
+
+            // ReSharper disable once InconsistentNaming
+            public class when_invoking_Handle_method_without_next_delegate_argument : given_a_composite_handler_with_no_child
+            {
+                private readonly Func<Task> _action;
+
+                public when_invoking_Handle_method_without_next_delegate_argument()
+                {
+                    _action = () => _handler.HandleAsync(string.Empty);
+                }
+
+                [Fact]
+                public async Task then_throws_NotSupportedException()
+                {
+                    // arrange
+
+                    // act
+
+                    // assert
+                    await _action.Should().ThrowAsync<NotSupportedException>();
+                }
             }
 
             private class CompositeHandlerWithNoChild : AsyncHandler<string, int>
