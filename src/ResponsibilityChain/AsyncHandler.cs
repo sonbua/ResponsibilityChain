@@ -53,14 +53,13 @@ namespace ResponsibilityChain
         }
 
         /// <summary>
-        /// <para>Asynchronously invokes handlers one by one until the <paramref name="input"/> has been processed by a handler and returns output, ignoring
-        /// the rest of the handlers.</para>
-        /// <para>It is done by first creating a pipeline execution delegate from existing handlers then invoking that delegate against the
-        /// <paramref name="input"/>.</para>
+        /// <para>Asynchronously invokes child handlers one by one until the <paramref name="input"/> has been processed by a child handler and returns output,
+        /// ignoring the rest of the handlers.</para>
+        /// <para>If none of the child handlers is able to handle the <paramref name="input"/>, it will be passed on to the <paramref name="next"/>
+        /// delegate. And if <paramref name="next"/> is <c>null</c>, <see cref="NotSupportedException"/> will be thrown.</para>
         /// </summary>
         /// <param name="input">The input object.</param>
-        /// <param name="next">The next handler in the chain. If <c>null</c> is provided and none of the handlers is able to handle the
-        /// <paramref name="input"/>, <see cref="NotSupportedException"/> will be thrown.</param>
+        /// <param name="next">The next handler in the chain.</param>
         /// <returns></returns>
         public virtual Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next)
         {
@@ -82,12 +81,10 @@ namespace ResponsibilityChain
         /// <summary>
         /// <para>Asynchronously invokes handlers one by one until the <paramref name="input"/> has been processed by a handler and returns output, ignoring
         /// the rest of the handlers.</para>
-        /// <para>It is done by first creating a pipeline execution delegate from existing handlers then invoking that delegate against the
-        /// <paramref name="input"/>.</para>
+        /// <para>If none of the child handlers is able to handle the <paramref name="input"/>, <see cref="NotSupportedException"/> will be thrown.</para>
         /// </summary>
         /// <param name="input">The input object.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if none of the handlers is able to handle the <paramref name="input"/>.</exception>
         public virtual Task<TOut> HandleAsync(TIn input)
         {
             return HandleAsync(input, null);
