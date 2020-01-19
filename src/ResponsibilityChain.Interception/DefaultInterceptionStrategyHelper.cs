@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ResponsibilityChain.Interception
 {
@@ -26,19 +25,11 @@ namespace ResponsibilityChain.Interception
             IEnumerable<IInterceptor<THandler, TIn, TOut>> interceptors)
             where THandler : class, IHandler<TIn, TOut>
         {
-            var interceptorArray = interceptors?.ToArray() ?? new IInterceptor<THandler, TIn, TOut>[0];
+            var notNullInterceptors = interceptors ?? new IInterceptor<THandler, TIn, TOut>[0];
 
-            return InterceptImpl(handler, interceptorArray);
-        }
-
-        private static IHandler<TIn, TOut> InterceptImpl<THandler, TIn, TOut>(
-            THandler handler,
-            IInterceptor<THandler, TIn, TOut>[] interceptors)
-            where THandler : IHandler<TIn, TOut>
-        {
             IHandler<TIn, TOut> intercepted = handler;
 
-            foreach (var interceptor in interceptors)
+            foreach (var interceptor in notNullInterceptors)
             {
                 intercepted = new InterceptedHandler<THandler, TIn, TOut>(intercepted, interceptor);
             }
