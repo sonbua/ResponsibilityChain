@@ -68,7 +68,7 @@ namespace ResponsibilityChain.Tests
 
         public class given_a_composite_coin_detector : AsyncHandlerTest
         {
-            private readonly IAsyncHandler<string, int> _handler;
+            private readonly AsyncHandler<string, int> _handler;
 
             public given_a_composite_coin_detector()
             {
@@ -88,7 +88,7 @@ namespace ResponsibilityChain.Tests
                 // arrange
 
                 // act
-                var actual = await _handler.HandleAsync(coin, null);
+                var actual = await _handler.HandleAsync(coin);
 
                 // assert
                 actual.Should().Be(expected);
@@ -101,7 +101,7 @@ namespace ResponsibilityChain.Tests
                 const string coin = "3";
 
                 // act
-                Func<Task> action = async () => await _handler.HandleAsync(coin, null);
+                Func<Task> action = async () => await _handler.HandleAsync(coin);
 
                 // assert
                 action.Should().Throw<NotSupportedException>();
@@ -114,7 +114,7 @@ namespace ResponsibilityChain.Tests
                 // arrange
 
                 // act
-                var actual = await _handler.HandleAsync(coins, null);
+                var actual = await _handler.HandleAsync(coins);
 
                 // assert
                 actual.Should().Be(expected);
@@ -213,7 +213,7 @@ namespace ResponsibilityChain.Tests
                 public async Task then_composite_handler_is_intercepted()
                 {
                     // act
-                    var result = await _handlerThatThrows.HandleAsync("any", null);
+                    var result = await _handlerThatThrows.HandleAsync("any");
 
                     // assert
                     result.Should().Be(default(int));
