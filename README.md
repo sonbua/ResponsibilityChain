@@ -8,7 +8,7 @@
 
 Handlers should implement `IHandler<TIn, TOut>` interface
 
-```cs
+```c#
 public interface IHandler<TIn, TOut>
 {
     TOut Handle(TIn input, Func<TIn, TOut> next);
@@ -17,7 +17,7 @@ public interface IHandler<TIn, TOut>
 
 Example
 
-```cs
+```c#
 /// <summary>
 ///     Parses work log to minutes.
 ///     E.g. "30m" => 30 minutes
@@ -44,9 +44,9 @@ public class MinuteParser : IHandler<string, int>
 
 ### Step 2: Compose
 
-A composite handler then extends `Handler<TIn, TOut>` and add child handlers via its constructor
+A composite handler then extends `Handler<TIn, TOut>` abstract class and add child handlers via its constructor
 
-```cs
+```c#
 public class WorkLogParser : Handler<string, int>
 {
     public WorkLogParser(WorkLogValidator validator, IndividualUnitParser individualUnitParser)
@@ -59,7 +59,7 @@ public class WorkLogParser : Handler<string, int>
 
 A composite handler can have as many nested handlers as needed. Support for deeply nested handlers is a natural progression.
 
-```cs
+```c#
 var parser = new WorkLogParser(
     new WorkLogValidator(
         new WorkLogMustNotBeNullOrEmptyRule(),
@@ -77,9 +77,9 @@ var parser = new WorkLogParser(
 
 ### Step 3: Execute
 
-```cs
+```c#
 // work log in minutes
-int workLog = parser.Handle("1w 2d 4h 30m", next: null);
+int workLog = parser.Handle("1w 2d 4h 30m");
 
 Assert.Equal(3630, workLog);
 ```
@@ -88,7 +88,7 @@ Assert.Equal(3630, workLog);
 
 If the last handler in the chain cannot handle the input (and it passes the input to the next handler), the composite handler will throw an exception of type `NotSupportedException` by default. This can be made explicitly via chain's constructor
 
-```cs
+```c#
 public class WorkLogParser : IHandler<string, int>
 {
     public WorkLogParser(
@@ -98,6 +98,7 @@ public class WorkLogParser : IHandler<string, int>
     {
         AddHandler(validator);
         AddHandler(individualUnitParser);
+
         // explicitly tell the chain to use ThrowNotSupported as the last resort
         AddHandler(throwNotSupported);
     }
@@ -106,7 +107,7 @@ public class WorkLogParser : IHandler<string, int>
 
 or via method invocation
 
-```cs
+```c#
 var workLog = parser.Handle("1w 2d 4h 30m", new ThrowNotSupported<string, int>().Handle);
 ```
 
@@ -114,3 +115,14 @@ There are also other built-in last resort handlers
 * `ReturnDefaultValue`
 * `ReturnCompletedTask`
 * `ReturnCompletedTaskWithDefaultValue`
+
+## Asynchronous operation
+
+For asynchronous operations, handlers should implement `IAsyncHandler<TIn, TOut>`
+
+```c#
+public interface IAsyncHandler<TIn, TOut> : IHandler
+{
+    Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next);
+}
+```

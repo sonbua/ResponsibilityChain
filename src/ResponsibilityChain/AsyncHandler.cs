@@ -27,6 +27,9 @@ namespace ResponsibilityChain
             _handlers = new List<IAsyncHandler<TIn, TOut>>();
         }
 
+        /// <summary>
+        /// Builds a chained delegate from the list of handlers.
+        /// </summary>
         private Func<Func<TIn, Task<TOut>>, Func<TIn, Task<TOut>>> ChainedDelegate
         {
             get
@@ -44,8 +47,7 @@ namespace ResponsibilityChain
                     var handler = _handlers[index];
                     var chainedDelegateCloned = chainedDelegate;
 
-                    chainedDelegate =
-                        next => input => handler.HandleAsync(input, chainedDelegateCloned(next));
+                    chainedDelegate = next => input => handler.HandleAsync(input, chainedDelegateCloned(next));
                 }
 
                 return _chainedDelegate = chainedDelegate;
