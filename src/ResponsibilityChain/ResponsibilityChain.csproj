@@ -16,7 +16,10 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ensure.That" Version="8.1.2" />
-        <PackageReference Include="Roslynator.Analyzers" Version="2.3.0" />
+        <PackageReference Include="Ensure.That" Version="8.2.0" />
+        <PackageReference Include="Roslynator.Analyzers" Version="2.3.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 </Project>
