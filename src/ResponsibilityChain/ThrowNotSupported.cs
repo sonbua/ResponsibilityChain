@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ResponsibilityChain
@@ -27,9 +28,10 @@ namespace ResponsibilityChain
         /// </summary>
         /// <param name="input">The input object.</param>
         /// <param name="next">The next handler in the chain.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="NotSupportedException"></exception>
-        public Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next)
+        public Task<TOut> HandleAsync(TIn input, Func<TIn, CancellationToken, Task<TOut>> next, CancellationToken cancellationToken)
         {
             throw new NotSupportedException($"Cannot handle this input. Input information: {typeof(TIn)}");
         }

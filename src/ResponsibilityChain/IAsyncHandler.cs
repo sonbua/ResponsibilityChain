@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ResponsibilityChain
@@ -15,7 +16,8 @@ namespace ResponsibilityChain
         /// </summary>
         /// <param name="input">The input object.</param>
         /// <param name="next">The next handler in the chain.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next);
+        Task<TOut> HandleAsync(TIn input, Func<TIn, CancellationToken, Task<TOut>> next, CancellationToken cancellationToken);
     }
 }

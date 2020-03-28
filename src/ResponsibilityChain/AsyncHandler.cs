@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 
@@ -15,7 +16,7 @@ namespace ResponsibilityChain
     {
         private readonly IInterceptionStrategy _interceptionStrategy;
         private readonly List<IAsyncHandler<TIn, TOut>> _handlers;
-        private Func<Func<TIn, Task<TOut>>, Func<TIn, Task<TOut>>> _chainedDelegate;
+        private Func<Func<TIn, CancellationToken, Task<TOut>>, Func<TIn, CancellationToken, Task<TOut>>> _chainedDelegate;
 
         /// <summary>
         /// Constructs the asynchronous composite handler.
@@ -30,7 +31,7 @@ namespace ResponsibilityChain
         /// <summary>
         /// Builds a chained delegate from the list of handlers.
         /// </summary>
-        private Func<Func<TIn, Task<TOut>>, Func<TIn, Task<TOut>>> ChainedDelegate
+        private Func<Func<TIn, CancellationToken, Task<TOut>>, Func<TIn, CancellationToken, Task<TOut>>> ChainedDelegate
         {
             get
             {
@@ -39,15 +40,16 @@ namespace ResponsibilityChain
                     return _chainedDelegate;
                 }
 
-                Func<Func<TIn, Task<TOut>>, Func<TIn, Task<TOut>>> chainedDelegate =
-                    next => input => _handlers.Last().HandleAsync(input, next);
+                Func<Func<TIn, CancellationToken, Task<TOut>>, Func<TIn, CancellationToken, Task<TOut>>> chainedDelegate =
+                    next => (input, token) => _handlers.Last().HandleAsync(input, next, token);
 
                 for (var index = _handlers.Count - 2; index >= 0; index--)
                 {
                     var handler = _handlers[index];
                     var chainedDelegateCloned = chainedDelegate;
 
-                    chainedDelegate = next => input => handler.HandleAsync(input, chainedDelegateCloned(next));
+                    chainedDelegate =
+                        next => (input, token) => handler.HandleAsync(input, chainedDelegateCloned(next), token);
                 }
 
                 return _chainedDelegate = chainedDelegate;
@@ -62,22 +64,23 @@ namespace ResponsibilityChain
         /// </summary>
         /// <param name="input">The input object.</param>
         /// <param name="next">The next handler in the chain.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public virtual Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next)
+        public virtual Task<TOut> HandleAsync(TIn input, Func<TIn, CancellationToken, Task<TOut>> next, CancellationToken cancellationToken)
         {
             if (next == null)
             {
-                next = _ => throw new NotSupportedException(
+                next = (_, __) => throw new NotSupportedException(
                     $"Cannot handle this input. Input information: {typeof(TIn)}"
                 );
             }
 
             if (_handlers.Count == 0)
             {
-                return next(input);
+                return next(input, cancellationToken);
             }
 
-            return ChainedDelegate.Invoke(next).Invoke(input);
+            return ChainedDelegate.Invoke(next).Invoke(input, cancellationToken);
         }
 
         /// <summary>
@@ -89,7 +92,7 @@ namespace ResponsibilityChain
         /// <returns></returns>
         public virtual Task<TOut> HandleAsync(TIn input)
         {
-            return HandleAsync(input, null);
+            return HandleAsync(input, null, CancellationToken.None);
         }
 
         /// <summary>

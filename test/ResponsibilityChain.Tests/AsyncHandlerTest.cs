@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
@@ -23,7 +24,7 @@ namespace ResponsibilityChain.Tests
 
                 public when_invoking_with_a_next_delegate()
                 {
-                    _result = _handler.HandleAsync(string.Empty, _ => Task.FromResult(0)).GetAwaiter().GetResult();
+                    _result = _handler.HandleAsync(string.Empty, (_, __) => Task.FromResult(0), CancellationToken.None).GetAwaiter().GetResult();
                 }
 
                 [Fact]
@@ -130,10 +131,10 @@ namespace ResponsibilityChain.Tests
                     AddHandler(fivePennyHandler);
                 }
 
-                public override async Task<int> HandleAsync(string input, Func<string, Task<int>> next)
+                public override async Task<int> HandleAsync(string input, Func<string, CancellationToken, Task<int>> next, CancellationToken cancellationToken)
                 {
                     var coinStrings = input.Split(' ');
-                    var detectionTasks = coinStrings.Select(coin => base.HandleAsync(coin, next)).ToList();
+                    var detectionTasks = coinStrings.Select(coin => base.HandleAsync(coin, next, cancellationToken)).ToList();
                     var coins = await Task.WhenAll(detectionTasks);
 
                     return coins.Sum();
@@ -142,11 +143,11 @@ namespace ResponsibilityChain.Tests
 
             private class OnePennyHandler : IAsyncHandler<string, int>
             {
-                public async Task<int> HandleAsync(string input, Func<string, Task<int>> next)
+                public async Task<int> HandleAsync(string input, Func<string, CancellationToken, Task<int>> next, CancellationToken cancellationToken)
                 {
                     if (input != "1")
                     {
-                        return await next(input);
+                        return await next(input, cancellationToken);
                     }
 
                     await Task.Delay(100);
@@ -157,11 +158,11 @@ namespace ResponsibilityChain.Tests
 
             private class TwoPennyHandler : IAsyncHandler<string, int>
             {
-                public async Task<int> HandleAsync(string input, Func<string, Task<int>> next)
+                public async Task<int> HandleAsync(string input, Func<string, CancellationToken, Task<int>> next, CancellationToken cancellationToken)
                 {
                     if (input != "2")
                     {
-                        return await next(input);
+                        return await next(input, cancellationToken);
                     }
 
                     await Task.Delay(200);
@@ -172,16 +173,69 @@ namespace ResponsibilityChain.Tests
 
             private class FivePennyHandler : IAsyncHandler<string, int>
             {
-                public async Task<int> HandleAsync(string input, Func<string, Task<int>> next)
+                public async Task<int> HandleAsync(string input, Func<string, CancellationToken, Task<int>> next, CancellationToken cancellationToken)
                 {
                     if (input != "5")
                     {
-                        return await next(input);
+                        return await next(input, cancellationToken);
                     }
 
                     await Task.Delay(500);
 
                     return 5;
+                }
+            }
+        }
+
+        public class given_a_composite_handler_which_take_3_seconds_to_complete : AsyncHandlerTest
+        {
+            private readonly SlowHandler _handler;
+
+            public given_a_composite_handler_which_take_3_seconds_to_complete()
+            {
+                _handler = new SlowHandler(new SlowHandlerImpl());
+            }
+
+            public class when_starting_operation : given_a_composite_handler_which_take_3_seconds_to_complete
+            {
+                private readonly Func<Task> _testDelegate;
+                private readonly CancellationTokenSource _cts;
+
+                public when_starting_operation()
+                {
+                    _cts = new CancellationTokenSource();
+
+                    _testDelegate = async () => await _handler.HandleAsync("any", null, _cts.Token).ConfigureAwait(false);
+                }
+
+                [Fact]
+                public async Task then_it_can_be_cancelled()
+                {
+                    // arrange
+                    _cts.CancelAfter(TimeSpan.FromMilliseconds(500));
+
+                    // act
+
+                    // assert
+                    await _testDelegate.Should().ThrowAsync<TaskCanceledException>().ConfigureAwait(false);
+                }
+            }
+
+            private class SlowHandler : AsyncHandler<string, int>
+            {
+                public SlowHandler(SlowHandlerImpl slowHandlerImpl)
+                {
+                    AddHandler(slowHandlerImpl);
+                }
+            }
+
+            private class SlowHandlerImpl : IAsyncHandler<string, int>
+            {
+                public async Task<int> HandleAsync(string input, Func<string, CancellationToken, Task<int>> next, CancellationToken cancellationToken)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken).ConfigureAwait(false);
+
+                    return int.MaxValue;
                 }
             }
         }
@@ -226,8 +280,7 @@ namespace ResponsibilityChain.Tests
                     throw new NotSupportedException();
                 }
 
-                public IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(
-                    TAsyncHandler asyncHandler)
+                public IAsyncHandler<TIn, TOut> InterceptAsyncHandler<TAsyncHandler, TIn, TOut>(TAsyncHandler asyncHandler)
                     where TAsyncHandler : class, IAsyncHandler<TIn, TOut>
                 {
                     return new SuppressExceptionAsyncHandler<TAsyncHandler, TIn, TOut>(asyncHandler);
@@ -243,11 +296,11 @@ namespace ResponsibilityChain.Tests
                         _asyncHandler = asyncHandler;
                     }
 
-                    public async Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next)
+                    public async Task<TOut> HandleAsync(TIn input, Func<TIn, CancellationToken, Task<TOut>> next, CancellationToken cancellationToken)
                     {
                         try
                         {
-                            return await _asyncHandler.HandleAsync(input, next);
+                            return await _asyncHandler.HandleAsync(input, next, cancellationToken);
                         }
                         catch
                         {

@@ -5,10 +5,10 @@
         <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>0.9.2</PackageVersion>
+        <PackageVersion>1.0.0</PackageVersion>
         <Title>ResponsibilityChain</Title>
         <Description>Chain of Responsibility and Composite pattern combined</Description>
-        <PackageReleaseNotes>Update documentation.</PackageReleaseNotes>
+        <PackageReleaseNotes>Be able to cancel an asynchronous operation.</PackageReleaseNotes>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain</PackageProjectUrl>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
