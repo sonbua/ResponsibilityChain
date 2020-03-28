@@ -3,7 +3,6 @@ using Xunit;
 
 namespace ResponsibilityChain.Tests
 {
-    // ReSharper disable once InconsistentNaming
     public class Handler_AddHandlerTest
     {
         [Fact]
