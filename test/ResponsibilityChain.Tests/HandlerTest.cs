@@ -19,12 +19,11 @@ namespace ResponsibilityChain.Tests
                 _handler = new CompositeHandlerWithNoChild();
             }
 
-            // ReSharper disable once InconsistentNaming
-            public class when_invoking_Handle_method_with_a_next_delegate : given_a_composite_handler_with_no_child_handler
+            public class when_invoking_with_a_next_delegate : given_a_composite_handler_with_no_child_handler
             {
                 private readonly int _result;
 
-                public when_invoking_Handle_method_with_a_next_delegate()
+                public when_invoking_with_a_next_delegate()
                 {
                     _result = _handler.Handle(string.Empty, _ => 0);
                 }
@@ -41,12 +40,11 @@ namespace ResponsibilityChain.Tests
                 }
             }
 
-            // ReSharper disable once InconsistentNaming
-            public class when_invoking_Handle_method_without_next_delegate_argument : given_a_composite_handler_with_no_child_handler
+            public class when_invoking_without_next_delegate_argument : given_a_composite_handler_with_no_child_handler
             {
                 private readonly Action _action;
 
-                public when_invoking_Handle_method_without_next_delegate_argument()
+                public when_invoking_without_next_delegate_argument()
                 {
                     _action = () => _handler.Handle(string.Empty);
                 }
