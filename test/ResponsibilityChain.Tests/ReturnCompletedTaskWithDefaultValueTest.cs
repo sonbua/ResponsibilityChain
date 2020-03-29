@@ -22,9 +22,9 @@ namespace ResponsibilityChain.Tests
         {
             public async Task<string> Handle(int input, Func<int, Task<string>> next)
             {
-                await Task.Delay(100);
+                await Task.Delay(100).ConfigureAwait(false);
 
-                return await next(input);
+                return await next(input).ConfigureAwait(false);
             }
         }
 
@@ -39,7 +39,7 @@ namespace ResponsibilityChain.Tests
             );
 
             // act
-            var result = await handler.Handle(111, null);
+            var result = await handler.Handle(111, null).ConfigureAwait(false);
 
             // assert
             Assert.Null(result);

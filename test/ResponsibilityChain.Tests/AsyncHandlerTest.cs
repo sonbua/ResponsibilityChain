@@ -56,7 +56,7 @@ namespace ResponsibilityChain.Tests
                     // act
 
                     // assert
-                    await _action.Should().ThrowAsync<NotSupportedException>();
+                    await _action.Should().ThrowAsync<NotSupportedException>().ConfigureAwait(false);
                 }
             }
 
@@ -87,7 +87,7 @@ namespace ResponsibilityChain.Tests
                 // arrange
 
                 // act
-                var actual = await _handler.HandleAsync(coin);
+                var actual = await _handler.HandleAsync(coin).ConfigureAwait(false);
 
                 // assert
                 actual.Should().Be(expected);
@@ -100,7 +100,7 @@ namespace ResponsibilityChain.Tests
                 const string coin = "3";
 
                 // act
-                Func<Task> action = async () => await _handler.HandleAsync(coin);
+                Func<Task> action = async () => await _handler.HandleAsync(coin).ConfigureAwait(false);
 
                 // assert
                 action.Should().Throw<NotSupportedException>();
@@ -113,7 +113,7 @@ namespace ResponsibilityChain.Tests
                 // arrange
 
                 // act
-                var actual = await _handler.HandleAsync(coins);
+                var actual = await _handler.HandleAsync(coins).ConfigureAwait(false);
 
                 // assert
                 actual.Should().Be(expected);
@@ -135,7 +135,7 @@ namespace ResponsibilityChain.Tests
                 {
                     var coinStrings = input.Split(' ');
                     var detectionTasks = coinStrings.Select(coin => base.HandleAsync(coin, next, cancellationToken)).ToList();
-                    var coins = await Task.WhenAll(detectionTasks);
+                    var coins = await Task.WhenAll(detectionTasks).ConfigureAwait(false);
 
                     return coins.Sum();
                 }
@@ -147,10 +147,10 @@ namespace ResponsibilityChain.Tests
                 {
                     if (input != "1")
                     {
-                        return await next(input, cancellationToken);
+                        return await next(input, cancellationToken).ConfigureAwait(false);
                     }
 
-                    await Task.Delay(100);
+                    await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
                     return 1;
                 }
@@ -162,10 +162,10 @@ namespace ResponsibilityChain.Tests
                 {
                     if (input != "2")
                     {
-                        return await next(input, cancellationToken);
+                        return await next(input, cancellationToken).ConfigureAwait(false);
                     }
 
-                    await Task.Delay(200);
+                    await Task.Delay(200, cancellationToken).ConfigureAwait(false);
 
                     return 2;
                 }
@@ -177,10 +177,10 @@ namespace ResponsibilityChain.Tests
                 {
                     if (input != "5")
                     {
-                        return await next(input, cancellationToken);
+                        return await next(input, cancellationToken).ConfigureAwait(false);
                     }
 
-                    await Task.Delay(500);
+                    await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                     return 5;
                 }
@@ -270,7 +270,7 @@ namespace ResponsibilityChain.Tests
                 public async Task then_composite_handler_is_intercepted()
                 {
                     // act
-                    var result = await _handlerThatThrows.HandleAsync("any");
+                    var result = await _handlerThatThrows.HandleAsync("any").ConfigureAwait(false);
 
                     // assert
                     result.Should().Be(default(int));
@@ -305,7 +305,7 @@ namespace ResponsibilityChain.Tests
                     {
                         try
                         {
-                            return await _asyncHandler.HandleAsync(input, next, cancellationToken);
+                            return await _asyncHandler.HandleAsync(input, next, cancellationToken).ConfigureAwait(false);
                         }
                         catch
                         {

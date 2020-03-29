@@ -24,7 +24,7 @@ namespace ResponsibilityChain.Tests
             var handler = new CompositeFooAsyncHandler(new BarHandler(), new ReturnCompletedTask<int>());
 
             // act
-            await handler.Handle(111, null);
+            await handler.Handle(111, null).ConfigureAwait(false);
 
             // assert
         }
@@ -33,9 +33,9 @@ namespace ResponsibilityChain.Tests
         {
             public async Task Handle(int input, Func<int, Task> next)
             {
-                await Task.Delay(100);
+                await Task.Delay(100).ConfigureAwait(false);
 
-                await next(input);
+                await next(input).ConfigureAwait(false);
             }
         }
     }
