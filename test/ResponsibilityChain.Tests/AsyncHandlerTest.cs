@@ -196,7 +196,7 @@ namespace ResponsibilityChain.Tests
                 _handler = new SlowHandler(new SlowHandlerImpl());
             }
 
-            public class when_starting_operation : given_a_composite_handler_which_take_3_seconds_to_complete
+            public class when_starting_operation : given_a_composite_handler_which_take_3_seconds_to_complete, IDisposable
             {
                 private readonly Func<Task> _testDelegate;
                 private readonly CancellationTokenSource _cts;
@@ -218,6 +218,11 @@ namespace ResponsibilityChain.Tests
 
                     // assert
                     await _testDelegate.Should().ThrowAsync<TaskCanceledException>().ConfigureAwait(false);
+                }
+
+                public void Dispose()
+                {
+                    _cts?.Dispose();
                 }
             }
 
