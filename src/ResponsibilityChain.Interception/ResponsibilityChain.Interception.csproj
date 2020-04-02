@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+        <TargetFramework>netstandard1.1</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.Interception.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>0.1.0</PackageVersion>
-        <Authors>Son Dinh Nguyen</Authors>
-        <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageVersion>1.0.0</PackageVersion>
+        <PackageReleaseNotes>Target `netstandard1.1` in order to support a wider range of frameworks and platforms.</PackageReleaseNotes>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain/</PackageProjectUrl>
+        <RepositoryType>Git</RepositoryType>
+        <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>
+        <Authors>Son Dinh Nguyen</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\ResponsibilityChain\ResponsibilityChain.csproj" />

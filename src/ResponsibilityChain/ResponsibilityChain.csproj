@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+        <TargetFramework>netstandard1.1</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\$(Configuration)\ResponsibilityChain.xml</DocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.1.0</PackageVersion>
         <Title>ResponsibilityChain</Title>
         <Description>Chain of Responsibility and Composite pattern combined</Description>
-        <PackageReleaseNotes>Be able to cancel an asynchronous operation.</PackageReleaseNotes>
+        <PackageReleaseNotes>Target `netstandard1.1` in order to support a wider range of frameworks and platforms.</PackageReleaseNotes>
         <PackageProjectUrl>https://www.nuget.org/packages/ResponsibilityChain</PackageProjectUrl>
         <RepositoryType>Git</RepositoryType>
         <RepositoryUrl>https://github.com/sonbua/ResponsibilityChain</RepositoryUrl>

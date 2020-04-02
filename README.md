@@ -1,6 +1,16 @@
 # _Chain of Responsibility_ and _Composite_ pattern combined
 
-[![Build status](https://ci.appveyor.com/api/projects/status/dc5qp2litp7rt74k?svg=true)](https://ci.appveyor.com/project/sonbua/responsibilitychain) [![Nuget](https://img.shields.io/nuget/v/ResponsibilityChain.svg)](https://www.nuget.org/packages/ResponsibilityChain) ![netstandard](https://img.shields.io/badge/netstandard-2.0-green) ![netframework](https://img.shields.io/badge/netfx-4.5.2-green)
+[![Build status](https://ci.appveyor.com/api/projects/status/dc5qp2litp7rt74k?svg=true)](https://ci.appveyor.com/project/sonbua/responsibilitychain) [![Nuget](https://img.shields.io/nuget/v/ResponsibilityChain.svg)](https://www.nuget.org/packages/ResponsibilityChain) ![netstandard](https://img.shields.io/badge/netstandard-1.1-green)
+
+## Frameworks and platforms support
+- .NET Core 1.0
+- .NET Framework 4.5
+- Mono 4.6
+- Xamarin.iOS 10.0
+- Xamarin.Mac 3.0
+- Xamarin.Android 7.0
+- Universal Windows Platform 10.0
+- Unity 2018.1
 
 ## Usage
 
