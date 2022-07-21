@@ -8,6 +8,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Interception.Tests", "test\ResponsibilityChain.Interception.Tests\ResponsibilityChain.Interception.Tests.csproj", "{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "global", "global", "{D6B2B0C8-FF73-4A38-8B0E-EA467242DA07}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2EB2B2A0-E27C-4464-864F-945D6FE76E40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{ECD93034-B079-4D59-BAB6-B6A0EDC0D806}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +40,11 @@ Global
 		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D94B3EC0-A6FB-4D1C-8EA0-DA8178D8117C} = {ECD93034-B079-4D59-BAB6-B6A0EDC0D806}
+		{18C78B2A-7FD9-4B28-8DB9-E293982E6FCA} = {ECD93034-B079-4D59-BAB6-B6A0EDC0D806}
+		{BB925365-43AC-4D30-B210-BD52AE9DF020} = {2EB2B2A0-E27C-4464-864F-945D6FE76E40}
+		{82EE3D37-EE78-4F8C-8B80-328C5D08A1D3} = {2EB2B2A0-E27C-4464-864F-945D6FE76E40}
 	EndGlobalSection
 EndGlobal
