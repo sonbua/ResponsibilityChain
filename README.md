@@ -133,6 +133,6 @@ For asynchronous operations, handlers should implement `IAsyncHandler<TIn, TOut>
 ```c#
 public interface IAsyncHandler<TIn, TOut> : IHandler
 {
-    Task<TOut> HandleAsync(TIn input, Func<TIn, Task<TOut>> next);
+    Task<TOut> HandleAsync(TIn input, Func<TIn, CancellationToken, Task<TOut>> next, CancellationToken cancellationToken);
 }
 ```
